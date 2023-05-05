@@ -109,7 +109,7 @@ class Solver:
 
     def solve(self):
         cdef float start = time.time()
-        cdef TreeNode curr = self.root 
+        curr = self.root 
         cdef int iter = 0
         cdef int pn 
         cdef int dn

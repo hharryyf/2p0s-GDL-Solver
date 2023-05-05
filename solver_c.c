@@ -4027,7 +4027,7 @@ static PyObject *__pyx_pf_8solver_c_6Solver___init__(CYTHON_UNUSED PyObject *__p
  * 
  *     def solve(self):             # <<<<<<<<<<<<<<
  *         cdef float start = time.time()
- *         cdef curr = self.root
+ *         curr = self.root
  */
 
 /* Python wrapper */
@@ -4046,7 +4046,7 @@ static PyObject *__pyx_pw_8solver_c_6Solver_3solve(PyObject *__pyx_self, PyObjec
 
 static PyObject *__pyx_pf_8solver_c_6Solver_2solve(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self) {
   float __pyx_v_start;
-  PyObject *__pyx_v_curr = 0;
+  PyObject *__pyx_v_curr = NULL;
   int __pyx_v_iter;
   int __pyx_v_pn;
   int __pyx_v_dn;
@@ -4071,7 +4071,7 @@ static PyObject *__pyx_pf_8solver_c_6Solver_2solve(CYTHON_UNUSED PyObject *__pyx
  * 
  *     def solve(self):
  *         cdef float start = time.time()             # <<<<<<<<<<<<<<
- *         cdef curr = self.root
+ *         curr = self.root
  *         cdef int iter = 0
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 111, __pyx_L1_error)
@@ -4101,7 +4101,7 @@ static PyObject *__pyx_pf_8solver_c_6Solver_2solve(CYTHON_UNUSED PyObject *__pyx
   /* "solver_c.pyx":112
  *     def solve(self):
  *         cdef float start = time.time()
- *         cdef curr = self.root             # <<<<<<<<<<<<<<
+ *         curr = self.root             # <<<<<<<<<<<<<<
  *         cdef int iter = 0
  *         cdef int pn
  */
@@ -4112,7 +4112,7 @@ static PyObject *__pyx_pf_8solver_c_6Solver_2solve(CYTHON_UNUSED PyObject *__pyx
 
   /* "solver_c.pyx":113
  *         cdef float start = time.time()
- *         cdef curr = self.root
+ *         curr = self.root
  *         cdef int iter = 0             # <<<<<<<<<<<<<<
  *         cdef int pn
  *         cdef int dn
@@ -4627,7 +4627,7 @@ static PyObject *__pyx_pf_8solver_c_6Solver_2solve(CYTHON_UNUSED PyObject *__pyx
  * 
  *     def solve(self):             # <<<<<<<<<<<<<<
  *         cdef float start = time.time()
- *         cdef curr = self.root
+ *         curr = self.root
  */
 
   /* function exit code */
@@ -4863,7 +4863,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *     def solve(self):             # <<<<<<<<<<<<<<
  *         cdef float start = time.time()
- *         cdef curr = self.root
+ *         curr = self.root
  */
   __pyx_tuple__13 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_start, __pyx_n_s_curr, __pyx_n_s_iter, __pyx_n_s_pn, __pyx_n_s_dn, __pyx_n_s_nxt); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
@@ -5324,7 +5324,7 @@ if (!__Pyx_RefNanny) {
  * 
  *     def solve(self):             # <<<<<<<<<<<<<<
  *         cdef float start = time.time()
- *         cdef curr = self.root
+ *         curr = self.root
  */
   __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_8solver_c_6Solver_3solve, 0, __pyx_n_s_Solver_solve, NULL, __pyx_n_s_solver_c, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
