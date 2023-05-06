@@ -1,14 +1,21 @@
 from pyswip import Prolog
-class board:
+cdef class board:
+    cdef public:
+        str player
+        object prolog
     def __init__(self, player, game_name):
         self.player = player
         self.prolog = Prolog()
         self.prolog.consult(game_name)
 
-    def get_legal(self):
-        result = list(self.prolog.query('legal(X, Y)')) 
-        p1 = set()
-        p2 = set()
+    cpdef list get_legal(self):
+        cdef list result = list(self.prolog.query('legal(X, Y)')) 
+        cdef set p1 = set()
+        cdef set p2 = set()
+        cdef dict res
+        cdef str mv1 
+        cdef str mv2
+
         for res in result:
             if res['X'] == self.player:
                 p1.add(f"does({res['X']},{res['Y']})")
@@ -22,35 +29,41 @@ class board:
 
         return result        
         
-    def is_terminate(self):
+    cpdef bint is_terminate(self):
         if len(list(self.prolog.query('terminal'))):
             return True
         return False
 
-    def get_reward(self):
-        reward = int(list(self.prolog.query(f'goal({self.player}, X)'))[0]['X'])
+    cpdef int get_reward(self):
+        cdef int reward = int(list(self.prolog.query(f'goal({self.player}, X)'))[0]['X'])
         return reward 
     
-    def update_move(self, moves):
-        for mv in moves:
-            self.prolog.assertz(mv)
+    cpdef update_move(self, list moves):
+        cdef int i
+        for i in range(0, len(moves)):
+            self.prolog.assertz(moves[i])
 
-    def remove_move(self, moves):
-        for mv in moves:
-            self.prolog.retract(mv)
+    cpdef remove_move(self, list moves):
+        cdef int i
+        for i in range(0, len(moves)):
+            self.prolog.retractall(moves[i])
 
-    def get_next(self):
-        fact = list(self.prolog.query('next(X)'))
-        result = []
-        for l in fact:
-            nxt = l['X']
+    cpdef list get_next(self):
+        cdef list fact = list(self.prolog.query('next(X)'))
+        cdef list result = []
+        cdef str nxt
+        cdef int i 
+        for i in range(len(fact)):
+            nxt = fact[i]['X']
             result.append(f'true({nxt})')
         return result
 
-    def get_init(self):
-        fact = list(self.prolog.query('init(X)'))
-        result = []
-        for l in fact:
-            nxt = l['X']
+    cpdef list get_init(self):
+        cdef list fact = list(self.prolog.query('init(X)'))
+        cdef list result = []
+        cdef str nxt
+        cdef int i 
+        for i in range(len(fact)):
+            nxt = fact[i]['X']
             result.append(f'true({nxt})')
         return result

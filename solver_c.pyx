@@ -1,8 +1,17 @@
 from board import board
-import math
 import time
-class TreeNode:
-    def __init__(self, parent, game, prestate=[], premove=[]):
+import math
+cdef class TreeNode:
+    
+    cdef public:
+        TreeNode parent 
+        float pn
+        float dn 
+        list children 
+        list moves 
+        list state
+        bint exist_node
+    def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[]):
         self.parent = parent
         if parent == None:
             self.exist_node = True
@@ -36,11 +45,11 @@ class TreeNode:
         game.remove_move(self.state)
         # print(len(self.moves))
 
-    def best_direction(self):
-        if len(self.children) == 0:
-            return None
+    cpdef TreeNode best_direction(self):
         cdef int mx = -1
         cdef int i
+        if len(self.children) == 0:
+            return None
         if self.exist_node:
             for i in range(0, len(self.children)):
                 if self.children[i].solved():
@@ -57,33 +66,30 @@ class TreeNode:
                     mx = i
                 elif self.children[i].dn < self.children[mx].dn:
                     mx = i
-        if mx == -1:
-            print('bad')
         
         return self.children[mx]
     
 
-    def solved(self):
+    cpdef bint solved(self):
         if self.pn == math.inf or self.dn == math.inf:
             return True 
         return False
 
-    def expand(self, g:board):
-        if self.solved():
-            print('try to expand solved node')
-            return
+    cpdef expand(self, object g):
+        cdef list valid
+        cdef TreeNode nxt
+        #print('start expand')
         for valid in self.moves:
             g.update_move(self.state)
             g.update_move(valid)
             nxt = TreeNode(self, g, self.state, valid)
             self.children.append(nxt)
-        
+        #print('end expand')
         
 
-    def update(self):
-        if len(self.children) == 0:
-            print('update leaf bad!!')
-            return
+    cpdef update(self):
+        cdef TreeNode child
+        
         
         if self.exist_node:
             self.pn = self.children[0].pn
@@ -101,21 +107,26 @@ class TreeNode:
         if self.solved():
             self.children.clear()
 
-class Solver:
-    def __init__(self, player, name, tl):
+cdef class Solver:
+    cdef public:
+        TreeNode root
+        object game
+        int time_limit
+    def __cinit__(self, str player, str name, int tl):
         self.game = board(player, name)
         self.time_limit = tl
         self.root = TreeNode(None, self.game)
 
-    def solve(self):
+    cpdef solve(self):
         cdef float start = time.time()
-        curr = self.root 
+        cdef TreeNode curr = self.root 
         cdef int iter = 0
-        cdef int pn 
-        cdef int dn
+        cdef float pn 
+        cdef float dn
+        cdef TreeNode nxt
         while not self.root.solved():
             iter += 1
-            if iter % 1000 == 0:
+            if iter % 1 == 0:
                 print('Iteration', iter, 'pn=', self.root.pn, 'dn=', self.root.dn)
 
             while len(curr.children) != 0:
@@ -137,9 +148,9 @@ class Solver:
             if time.time() - start > self.time_limit:
                 break    
 
-        if self.root.pn == 0:
+        if self.root.dn == math.inf:
             print('SAT')
-        elif self.root.dn == 0:
+        elif self.root.pn == math.inf:
             print('UNSAT')
         else:
             print('UNKNOWN')

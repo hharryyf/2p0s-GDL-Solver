@@ -143,5 +143,5 @@ class Solver:
             print('UNKNOWN')
 
 
-solver = Solver('red', 'game/connect-4-5x5.pl', 1800)
+solver = Solver('xplayer', 'game/break-through-4x4.pl', 1800)
 solver.solve()

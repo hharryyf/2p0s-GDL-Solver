@@ -37,7 +37,7 @@ class board:
 
     def remove_move(self, moves):
         for mv in moves:
-            self.prolog.retract(mv)
+            self.prolog.retractall(mv)
 
     def get_next(self):
         fact = list(self.prolog.query('next(X)'))
