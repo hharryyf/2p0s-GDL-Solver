@@ -3170,7 +3170,7 @@ static PyObject *__pyx_f_5board_5board_get_next(struct __pyx_obj_5board_board *_
  *         for i in range(len(fact)):
  *             nxt = fact[i]['X']             # <<<<<<<<<<<<<<
  *             result.append(f'true({nxt})')
- *         return result
+ *         return list(set(result))
  */
     __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_fact, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
@@ -3185,7 +3185,7 @@ static PyObject *__pyx_f_5board_5board_get_next(struct __pyx_obj_5board_board *_
  *         for i in range(len(fact)):
  *             nxt = fact[i]['X']
  *             result.append(f'true({nxt})')             # <<<<<<<<<<<<<<
- *         return result
+ *         return list(set(result))
  * 
  */
     __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
@@ -3217,13 +3217,18 @@ static PyObject *__pyx_f_5board_5board_get_next(struct __pyx_obj_5board_board *_
   /* "board.pyx":59
  *             nxt = fact[i]['X']
  *             result.append(f'true({nxt})')
- *         return result             # <<<<<<<<<<<<<<
+ *         return list(set(result))             # <<<<<<<<<<<<<<
  * 
  *     cpdef list get_init(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_result);
-  __pyx_r = __pyx_v_result;
+  __pyx_t_2 = PySet_New(__pyx_v_result); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_r = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
   goto __pyx_L0;
 
   /* "board.pyx":51
@@ -3291,7 +3296,7 @@ static PyObject *__pyx_pf_5board_5board_12get_next(struct __pyx_obj_5board_board
 }
 
 /* "board.pyx":61
- *         return result
+ *         return list(set(result))
  * 
  *     cpdef list get_init(self):             # <<<<<<<<<<<<<<
  *         cdef list fact = list(self.prolog.query('init(X)'))
@@ -3427,7 +3432,7 @@ static PyObject *__pyx_f_5board_5board_get_init(struct __pyx_obj_5board_board *_
  *         for i in range(len(fact)):
  *             nxt = fact[i]['X']             # <<<<<<<<<<<<<<
  *             result.append(f'true({nxt})')
- *         return result
+ *         return list(set(result))
  */
     __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_fact, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
@@ -3442,7 +3447,7 @@ static PyObject *__pyx_f_5board_5board_get_init(struct __pyx_obj_5board_board *_
  *         for i in range(len(fact)):
  *             nxt = fact[i]['X']
  *             result.append(f'true({nxt})')             # <<<<<<<<<<<<<<
- *         return result
+ *         return list(set(result))
  */
     __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -3473,15 +3478,20 @@ static PyObject *__pyx_f_5board_5board_get_init(struct __pyx_obj_5board_board *_
   /* "board.pyx":69
  *             nxt = fact[i]['X']
  *             result.append(f'true({nxt})')
- *         return result             # <<<<<<<<<<<<<<
+ *         return list(set(result))             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_result);
-  __pyx_r = __pyx_v_result;
+  __pyx_t_2 = PySet_New(__pyx_v_result); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_r = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
   goto __pyx_L0;
 
   /* "board.pyx":61
- *         return result
+ *         return list(set(result))
  * 
  *     cpdef list get_init(self):             # <<<<<<<<<<<<<<
  *         cdef list fact = list(self.prolog.query('init(X)'))

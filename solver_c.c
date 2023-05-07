@@ -970,9 +970,9 @@ static const char *__pyx_f[] = {
 struct __pyx_obj_8solver_c_TreeNode;
 struct __pyx_obj_8solver_c_Solver;
 
-/* "solver_c.pyx":4
- * import time
- * import math
+/* "solver_c.pyx":7
+ * cdef float R = 0.5
+ * 
  * cdef class TreeNode:             # <<<<<<<<<<<<<<
  * 
  *     cdef public:
@@ -983,6 +983,8 @@ struct __pyx_obj_8solver_c_TreeNode {
   struct __pyx_obj_8solver_c_TreeNode *parent;
   float pn;
   float dn;
+  float deep;
+  int depth;
   PyObject *children;
   PyObject *moves;
   PyObject *state;
@@ -990,8 +992,8 @@ struct __pyx_obj_8solver_c_TreeNode {
 };
 
 
-/* "solver_c.pyx":110
- *             self.children.clear()
+/* "solver_c.pyx":143
+ * 
  * 
  * cdef class Solver:             # <<<<<<<<<<<<<<
  *     cdef public:
@@ -1007,15 +1009,16 @@ struct __pyx_obj_8solver_c_Solver {
 
 
 
-/* "solver_c.pyx":4
- * import time
- * import math
+/* "solver_c.pyx":7
+ * cdef float R = 0.5
+ * 
  * cdef class TreeNode:             # <<<<<<<<<<<<<<
  * 
  *     cdef public:
  */
 
 struct __pyx_vtabstruct_8solver_c_TreeNode {
+  float (*dpn)(struct __pyx_obj_8solver_c_TreeNode *, int __pyx_skip_dispatch);
   struct __pyx_obj_8solver_c_TreeNode *(*best_direction)(struct __pyx_obj_8solver_c_TreeNode *, int __pyx_skip_dispatch);
   int (*solved)(struct __pyx_obj_8solver_c_TreeNode *, int __pyx_skip_dispatch);
   PyObject *(*expand)(struct __pyx_obj_8solver_c_TreeNode *, PyObject *, int __pyx_skip_dispatch);
@@ -1024,8 +1027,8 @@ struct __pyx_vtabstruct_8solver_c_TreeNode {
 static struct __pyx_vtabstruct_8solver_c_TreeNode *__pyx_vtabptr_8solver_c_TreeNode;
 
 
-/* "solver_c.pyx":110
- *             self.children.clear()
+/* "solver_c.pyx":143
+ * 
  * 
  * cdef class Solver:             # <<<<<<<<<<<<<<
  *     cdef public:
@@ -1242,31 +1245,6 @@ static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_ve
 static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
 #endif
 
-/* ExtTypeTest.proto */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
-
-/* GetItemInt.proto */
-#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
-    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
-               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
-#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
-                                                     int is_list, int wraparound, int boundscheck);
-
 /* PyThreadStateGet.proto */
 #if CYTHON_FAST_THREAD_STATE
 #define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
@@ -1307,6 +1285,31 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 static void __Pyx_WriteUnraisable(const char *name, int clineno,
                                   int lineno, const char *filename,
                                   int full_traceback, int nogil);
+
+/* ExtTypeTest.proto */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
+
+/* GetItemInt.proto */
+#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
+               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
+#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
+                                                     int is_list, int wraparound, int boundscheck);
 
 /* ListAppend.proto */
 #if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
@@ -1440,6 +1443,7 @@ static int __Pyx_check_binary_version(void);
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
+static float __pyx_f_8solver_c_8TreeNode_dpn(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
 static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_direction(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
 static int __pyx_f_8solver_c_8TreeNode_solved(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, int __pyx_skip_dispatch); /* proto*/
 static PyObject *__pyx_f_8solver_c_8TreeNode_expand(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_g, int __pyx_skip_dispatch); /* proto*/
@@ -1449,6 +1453,7 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
 /* Module declarations from 'solver_c' */
 static PyTypeObject *__pyx_ptype_8solver_c_TreeNode = 0;
 static PyTypeObject *__pyx_ptype_8solver_c_Solver = 0;
+static float __pyx_v_8solver_c_R;
 #define __Pyx_MODULE_NAME "solver_c"
 extern int __pyx_module_is_main_solver_c;
 int __pyx_module_is_main_solver_c = 0;
@@ -1456,10 +1461,12 @@ int __pyx_module_is_main_solver_c = 0;
 /* Implementation of 'solver_c' */
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_TypeError;
+static const char __pyx_k_d[] = "d";
 static const char __pyx_k_dn[] = "dn";
 static const char __pyx_k_pn[] = "pn";
 static const char __pyx_k_tl[] = "tl";
 static const char __pyx_k_SAT[] = "SAT";
+static const char __pyx_k_dpn[] = "dpn";
 static const char __pyx_k_end[] = "end";
 static const char __pyx_k_inf[] = "inf";
 static const char __pyx_k_dn_2[] = "dn=";
@@ -1503,6 +1510,8 @@ static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_remove_move[] = "remove_move";
 static const char __pyx_k_update_move[] = "update_move";
 static const char __pyx_k_is_terminate[] = "is_terminate";
+static const char __pyx_k_perf_counter[] = "perf_counter";
+static const char __pyx_k_Time_consumed[] = "Time consumed";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
 static const char __pyx_k_best_direction[] = "best_direction";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
@@ -1511,6 +1520,7 @@ static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __red
 static PyObject *__pyx_n_s_Iteration;
 static PyObject *__pyx_n_s_SAT;
 static PyObject *__pyx_n_s_Solver;
+static PyObject *__pyx_kp_s_Time_consumed;
 static PyObject *__pyx_n_s_TreeNode;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_n_s_UNKNOWN;
@@ -1519,8 +1529,10 @@ static PyObject *__pyx_n_s_best_direction;
 static PyObject *__pyx_n_s_board;
 static PyObject *__pyx_n_s_clear;
 static PyObject *__pyx_n_s_cline_in_traceback;
+static PyObject *__pyx_n_s_d;
 static PyObject *__pyx_n_s_dn;
 static PyObject *__pyx_kp_s_dn_2;
+static PyObject *__pyx_n_s_dpn;
 static PyObject *__pyx_n_s_end;
 static PyObject *__pyx_n_s_expand;
 static PyObject *__pyx_n_s_file;
@@ -1539,6 +1551,7 @@ static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_name_2;
 static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
 static PyObject *__pyx_n_s_parent;
+static PyObject *__pyx_n_s_perf_counter;
 static PyObject *__pyx_n_s_player;
 static PyObject *__pyx_n_s_pn;
 static PyObject *__pyx_kp_s_pn_2;
@@ -1560,11 +1573,12 @@ static PyObject *__pyx_n_s_time;
 static PyObject *__pyx_n_s_tl;
 static PyObject *__pyx_n_s_update;
 static PyObject *__pyx_n_s_update_move;
-static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, struct __pyx_obj_8solver_c_TreeNode *__pyx_v_parent, PyObject *__pyx_v_game, PyObject *__pyx_v_prestate, PyObject *__pyx_v_premove); /* proto */
-static PyObject *__pyx_pf_8solver_c_8TreeNode_2best_direction(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_8solver_c_8TreeNode_4solved(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_8solver_c_8TreeNode_6expand(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_g); /* proto */
-static PyObject *__pyx_pf_8solver_c_8TreeNode_8update(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
+static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, struct __pyx_obj_8solver_c_TreeNode *__pyx_v_parent, PyObject *__pyx_v_game, PyObject *__pyx_v_prestate, PyObject *__pyx_v_premove, int __pyx_v_d); /* proto */
+static PyObject *__pyx_pf_8solver_c_8TreeNode_2dpn(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_8solver_c_8TreeNode_4best_direction(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_8solver_c_8TreeNode_6solved(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_8solver_c_8TreeNode_8expand(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_g); /* proto */
+static PyObject *__pyx_pf_8solver_c_8TreeNode_10update(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_8solver_c_8TreeNode_6parent___get__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
 static int __pyx_pf_8solver_c_8TreeNode_6parent_2__set__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static int __pyx_pf_8solver_c_8TreeNode_6parent_4__del__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
@@ -1572,6 +1586,10 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_2pn___get__(struct __pyx_obj_8solv
 static int __pyx_pf_8solver_c_8TreeNode_2pn_2__set__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_8solver_c_8TreeNode_2dn___get__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
 static int __pyx_pf_8solver_c_8TreeNode_2dn_2__set__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_8solver_c_8TreeNode_4deep___get__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
+static int __pyx_pf_8solver_c_8TreeNode_4deep_2__set__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_8solver_c_8TreeNode_5depth___get__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
+static int __pyx_pf_8solver_c_8TreeNode_5depth_2__set__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_8solver_c_8TreeNode_8children___get__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
 static int __pyx_pf_8solver_c_8TreeNode_8children_2__set__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static int __pyx_pf_8solver_c_8TreeNode_8children_4__del__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
@@ -1583,8 +1601,8 @@ static int __pyx_pf_8solver_c_8TreeNode_5state_2__set__(struct __pyx_obj_8solver
 static int __pyx_pf_8solver_c_8TreeNode_5state_4__del__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_8solver_c_8TreeNode_10exist_node___get__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
 static int __pyx_pf_8solver_c_8TreeNode_10exist_node_2__set__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static PyObject *__pyx_pf_8solver_c_8TreeNode_10__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_8solver_c_8TreeNode_12__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_8solver_c_8TreeNode_12__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_8solver_c_8TreeNode_14__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_8solver_c_6Solver___cinit__(struct __pyx_obj_8solver_c_Solver *__pyx_v_self, PyObject *__pyx_v_player, PyObject *__pyx_v_name, int __pyx_v_tl); /* proto */
 static PyObject *__pyx_pf_8solver_c_6Solver_2solve(struct __pyx_obj_8solver_c_Solver *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_8solver_c_6Solver_4root___get__(struct __pyx_obj_8solver_c_Solver *__pyx_v_self); /* proto */
@@ -1608,12 +1626,12 @@ static PyObject *__pyx_tuple__5;
 static PyObject *__pyx_tuple__6;
 /* Late includes */
 
-/* "solver_c.pyx":14
+/* "solver_c.pyx":19
  *         list state
  *         bint exist_node
- *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[]):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[], int d=1):             # <<<<<<<<<<<<<<
+ *         #print('start create node')
  *         self.parent = parent
- *         if parent == None:
  */
 
 /* Python wrapper */
@@ -1623,6 +1641,7 @@ static int __pyx_pw_8solver_c_8TreeNode_1__cinit__(PyObject *__pyx_v_self, PyObj
   PyObject *__pyx_v_game = 0;
   PyObject *__pyx_v_prestate = 0;
   PyObject *__pyx_v_premove = 0;
+  int __pyx_v_d;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1630,14 +1649,16 @@ static int __pyx_pw_8solver_c_8TreeNode_1__cinit__(PyObject *__pyx_v_self, PyObj
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_parent,&__pyx_n_s_game,&__pyx_n_s_prestate,&__pyx_n_s_premove,0};
-    PyObject* values[4] = {0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_parent,&__pyx_n_s_game,&__pyx_n_s_prestate,&__pyx_n_s_premove,&__pyx_n_s_d,0};
+    PyObject* values[5] = {0,0,0,0,0};
     values[2] = __pyx_k_;
     values[3] = __pyx_k__2;
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        CYTHON_FALLTHROUGH;
         case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
         CYTHON_FALLTHROUGH;
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
@@ -1658,7 +1679,7 @@ static int __pyx_pw_8solver_c_8TreeNode_1__cinit__(PyObject *__pyx_v_self, PyObj
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_game)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 4, 1); __PYX_ERR(0, 14, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 5, 1); __PYX_ERR(0, 19, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -1672,12 +1693,20 @@ static int __pyx_pw_8solver_c_8TreeNode_1__cinit__(PyObject *__pyx_v_self, PyObj
           PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_premove);
           if (value) { values[3] = value; kw_args--; }
         }
+        CYTHON_FALLTHROUGH;
+        case  4:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_d);
+          if (value) { values[4] = value; kw_args--; }
+        }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 14, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 19, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        CYTHON_FALLTHROUGH;
         case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
         CYTHON_FALLTHROUGH;
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
@@ -1692,19 +1721,24 @@ static int __pyx_pw_8solver_c_8TreeNode_1__cinit__(PyObject *__pyx_v_self, PyObj
     __pyx_v_game = values[1];
     __pyx_v_prestate = ((PyObject*)values[2]);
     __pyx_v_premove = ((PyObject*)values[3]);
+    if (values[4]) {
+      __pyx_v_d = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_d == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 19, __pyx_L3_error)
+    } else {
+      __pyx_v_d = ((int)1);
+    }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 14, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 19, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("solver_c.TreeNode.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_parent), __pyx_ptype_8solver_c_TreeNode, 1, "parent", 0))) __PYX_ERR(0, 14, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_prestate), (&PyList_Type), 1, "prestate", 1))) __PYX_ERR(0, 14, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_premove), (&PyList_Type), 1, "premove", 1))) __PYX_ERR(0, 14, __pyx_L1_error)
-  __pyx_r = __pyx_pf_8solver_c_8TreeNode___cinit__(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self), __pyx_v_parent, __pyx_v_game, __pyx_v_prestate, __pyx_v_premove);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_parent), __pyx_ptype_8solver_c_TreeNode, 1, "parent", 0))) __PYX_ERR(0, 19, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_prestate), (&PyList_Type), 1, "prestate", 1))) __PYX_ERR(0, 19, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_premove), (&PyList_Type), 1, "premove", 1))) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_r = __pyx_pf_8solver_c_8TreeNode___cinit__(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self), __pyx_v_parent, __pyx_v_game, __pyx_v_prestate, __pyx_v_premove, __pyx_v_d);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1715,7 +1749,7 @@ static int __pyx_pw_8solver_c_8TreeNode_1__cinit__(PyObject *__pyx_v_self, PyObj
   return __pyx_r;
 }
 
-static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, struct __pyx_obj_8solver_c_TreeNode *__pyx_v_parent, PyObject *__pyx_v_game, PyObject *__pyx_v_prestate, PyObject *__pyx_v_premove) {
+static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, struct __pyx_obj_8solver_c_TreeNode *__pyx_v_parent, PyObject *__pyx_v_game, PyObject *__pyx_v_prestate, PyObject *__pyx_v_premove, int __pyx_v_d) {
   PyObject *__pyx_v_reward = NULL;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -1731,9 +1765,9 @@ static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_Tre
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "solver_c.pyx":15
- *         bint exist_node
- *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[]):
+  /* "solver_c.pyx":21
+ *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[], int d=1):
+ *         #print('start create node')
  *         self.parent = parent             # <<<<<<<<<<<<<<
  *         if parent == None:
  *             self.exist_node = True
@@ -1744,19 +1778,19 @@ static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_Tre
   __Pyx_DECREF(((PyObject *)__pyx_v_self->parent));
   __pyx_v_self->parent = __pyx_v_parent;
 
-  /* "solver_c.pyx":16
- *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[]):
+  /* "solver_c.pyx":22
+ *         #print('start create node')
  *         self.parent = parent
  *         if parent == None:             # <<<<<<<<<<<<<<
  *             self.exist_node = True
  *         else:
  */
-  __pyx_t_1 = PyObject_RichCompare(((PyObject *)__pyx_v_parent), Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(((PyObject *)__pyx_v_parent), Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "solver_c.pyx":17
+    /* "solver_c.pyx":23
  *         self.parent = parent
  *         if parent == None:
  *             self.exist_node = True             # <<<<<<<<<<<<<<
@@ -1765,8 +1799,8 @@ static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_Tre
  */
     __pyx_v_self->exist_node = 1;
 
-    /* "solver_c.pyx":16
- *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[]):
+    /* "solver_c.pyx":22
+ *         #print('start create node')
  *         self.parent = parent
  *         if parent == None:             # <<<<<<<<<<<<<<
  *             self.exist_node = True
@@ -1775,26 +1809,48 @@ static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_Tre
     goto __pyx_L3;
   }
 
-  /* "solver_c.pyx":19
+  /* "solver_c.pyx":25
  *             self.exist_node = True
  *         else:
  *             self.exist_node = (not self.parent.exist_node)             # <<<<<<<<<<<<<<
  * 
- *         self.children = []
+ *         self.depth = d
  */
   /*else*/ {
     __pyx_v_self->exist_node = (!(__pyx_v_self->parent->exist_node != 0));
   }
   __pyx_L3:;
 
-  /* "solver_c.pyx":21
+  /* "solver_c.pyx":27
  *             self.exist_node = (not self.parent.exist_node)
  * 
+ *         self.depth = d             # <<<<<<<<<<<<<<
+ *         self.deep = 1.0 / self.depth
+ *         self.children = []
+ */
+  __pyx_v_self->depth = __pyx_v_d;
+
+  /* "solver_c.pyx":28
+ * 
+ *         self.depth = d
+ *         self.deep = 1.0 / self.depth             # <<<<<<<<<<<<<<
+ *         self.children = []
+ *         self.moves = []
+ */
+  if (unlikely(__pyx_v_self->depth == 0)) {
+    PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+    __PYX_ERR(0, 28, __pyx_L1_error)
+  }
+  __pyx_v_self->deep = (1.0 / __pyx_v_self->depth);
+
+  /* "solver_c.pyx":29
+ *         self.depth = d
+ *         self.deep = 1.0 / self.depth
  *         self.children = []             # <<<<<<<<<<<<<<
  *         self.moves = []
  *         if parent == None:
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->children);
@@ -1802,14 +1858,14 @@ static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_Tre
   __pyx_v_self->children = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "solver_c.pyx":22
- * 
+  /* "solver_c.pyx":30
+ *         self.deep = 1.0 / self.depth
  *         self.children = []
  *         self.moves = []             # <<<<<<<<<<<<<<
  *         if parent == None:
  *             self.state = game.get_init()
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->moves);
@@ -1817,207 +1873,26 @@ static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_Tre
   __pyx_v_self->moves = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "solver_c.pyx":23
+  /* "solver_c.pyx":31
  *         self.children = []
  *         self.moves = []
  *         if parent == None:             # <<<<<<<<<<<<<<
  *             self.state = game.get_init()
  *         else:
  */
-  __pyx_t_1 = PyObject_RichCompare(((PyObject *)__pyx_v_parent), Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(((PyObject *)__pyx_v_parent), Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "solver_c.pyx":24
+    /* "solver_c.pyx":32
  *         self.moves = []
  *         if parent == None:
  *             self.state = game.get_init()             # <<<<<<<<<<<<<<
  *         else:
  *             self.state = game.get_next()
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_get_init); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_4);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_3, function);
-      }
-    }
-    __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 24, __pyx_L1_error)
-    __Pyx_GIVEREF(__pyx_t_1);
-    __Pyx_GOTREF(__pyx_v_self->state);
-    __Pyx_DECREF(__pyx_v_self->state);
-    __pyx_v_self->state = ((PyObject*)__pyx_t_1);
-    __pyx_t_1 = 0;
-
-    /* "solver_c.pyx":23
- *         self.children = []
- *         self.moves = []
- *         if parent == None:             # <<<<<<<<<<<<<<
- *             self.state = game.get_init()
- *         else:
- */
-    goto __pyx_L4;
-  }
-
-  /* "solver_c.pyx":26
- *             self.state = game.get_init()
- *         else:
- *             self.state = game.get_next()             # <<<<<<<<<<<<<<
- *         game.remove_move(prestate)
- *         game.remove_move(premove)
- */
-  /*else*/ {
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_get_next); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 26, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_4);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_3, function);
-      }
-    }
-    __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 26, __pyx_L1_error)
-    __Pyx_GIVEREF(__pyx_t_1);
-    __Pyx_GOTREF(__pyx_v_self->state);
-    __Pyx_DECREF(__pyx_v_self->state);
-    __pyx_v_self->state = ((PyObject*)__pyx_t_1);
-    __pyx_t_1 = 0;
-  }
-  __pyx_L4:;
-
-  /* "solver_c.pyx":27
- *         else:
- *             self.state = game.get_next()
- *         game.remove_move(prestate)             # <<<<<<<<<<<<<<
- *         game.remove_move(premove)
- *         game.update_move(self.state)
- */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_remove_move); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 27, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_prestate) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_prestate);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "solver_c.pyx":28
- *             self.state = game.get_next()
- *         game.remove_move(prestate)
- *         game.remove_move(premove)             # <<<<<<<<<<<<<<
- *         game.update_move(self.state)
- *         #print(self.state)
- */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_remove_move); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_premove) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_premove);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "solver_c.pyx":29
- *         game.remove_move(prestate)
- *         game.remove_move(premove)
- *         game.update_move(self.state)             # <<<<<<<<<<<<<<
- *         #print(self.state)
- *         if game.is_terminate():
- */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_update_move); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_self->state) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_self->state);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "solver_c.pyx":31
- *         game.update_move(self.state)
- *         #print(self.state)
- *         if game.is_terminate():             # <<<<<<<<<<<<<<
- *             reward = game.get_reward()
- *             if reward == 100:
- */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_is_terminate); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 31, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 31, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__pyx_t_2) {
-
-    /* "solver_c.pyx":32
- *         #print(self.state)
- *         if game.is_terminate():
- *             reward = game.get_reward()             # <<<<<<<<<<<<<<
- *             if reward == 100:
- *                 self.pn, self.dn = 0, math.inf
- */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_get_reward); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_get_init); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -2034,90 +1909,32 @@ static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_Tre
     if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_v_reward = __pyx_t_1;
+    if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 32, __pyx_L1_error)
+    __Pyx_GIVEREF(__pyx_t_1);
+    __Pyx_GOTREF(__pyx_v_self->state);
+    __Pyx_DECREF(__pyx_v_self->state);
+    __pyx_v_self->state = ((PyObject*)__pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "solver_c.pyx":33
- *         if game.is_terminate():
- *             reward = game.get_reward()
- *             if reward == 100:             # <<<<<<<<<<<<<<
- *                 self.pn, self.dn = 0, math.inf
- *             else:
- */
-    __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_reward, __pyx_int_100, 0x64, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 33, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (__pyx_t_2) {
-
-      /* "solver_c.pyx":34
- *             reward = game.get_reward()
- *             if reward == 100:
- *                 self.pn, self.dn = 0, math.inf             # <<<<<<<<<<<<<<
- *             else:
- *                 # we treat draw as loss as well
- */
-      __pyx_t_5 = 0.0;
-      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_math); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_inf); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 34, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_t_3); if (unlikely((__pyx_t_6 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 34, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_v_self->pn = __pyx_t_5;
-      __pyx_v_self->dn = __pyx_t_6;
-
-      /* "solver_c.pyx":33
- *         if game.is_terminate():
- *             reward = game.get_reward()
- *             if reward == 100:             # <<<<<<<<<<<<<<
- *                 self.pn, self.dn = 0, math.inf
- *             else:
- */
-      goto __pyx_L6;
-    }
-
-    /* "solver_c.pyx":37
- *             else:
- *                 # we treat draw as loss as well
- *                 self.pn, self.dn = math.inf, 0             # <<<<<<<<<<<<<<
- *         else:
- *             self.moves = game.get_legal()
- */
-    /*else*/ {
-      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_math); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_inf); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_6 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 37, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_5 = 0.0;
-      __pyx_v_self->pn = __pyx_t_6;
-      __pyx_v_self->dn = __pyx_t_5;
-    }
-    __pyx_L6:;
-
     /* "solver_c.pyx":31
- *         game.update_move(self.state)
- *         #print(self.state)
- *         if game.is_terminate():             # <<<<<<<<<<<<<<
- *             reward = game.get_reward()
- *             if reward == 100:
+ *         self.children = []
+ *         self.moves = []
+ *         if parent == None:             # <<<<<<<<<<<<<<
+ *             self.state = game.get_init()
+ *         else:
  */
-    goto __pyx_L5;
+    goto __pyx_L4;
   }
 
-  /* "solver_c.pyx":39
- *                 self.pn, self.dn = math.inf, 0
+  /* "solver_c.pyx":34
+ *             self.state = game.get_init()
  *         else:
- *             self.moves = game.get_legal()             # <<<<<<<<<<<<<<
- *             if self.exist_node:
- *                 self.pn, self.dn = 1, len(self.moves)
+ *             self.state = game.get_next()             # <<<<<<<<<<<<<<
+ *         #print(len(prestate), len(premove), len(self.state))
+ *         game.remove_move(prestate)
  */
   /*else*/ {
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_get_legal); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_get_next); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 34, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -2131,87 +1948,78 @@ static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_Tre
     }
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 39, __pyx_L1_error)
+    if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 34, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_1);
-    __Pyx_GOTREF(__pyx_v_self->moves);
-    __Pyx_DECREF(__pyx_v_self->moves);
-    __pyx_v_self->moves = ((PyObject*)__pyx_t_1);
+    __Pyx_GOTREF(__pyx_v_self->state);
+    __Pyx_DECREF(__pyx_v_self->state);
+    __pyx_v_self->state = ((PyObject*)__pyx_t_1);
     __pyx_t_1 = 0;
-
-    /* "solver_c.pyx":40
- *         else:
- *             self.moves = game.get_legal()
- *             if self.exist_node:             # <<<<<<<<<<<<<<
- *                 self.pn, self.dn = 1, len(self.moves)
- *             else:
- */
-    __pyx_t_2 = (__pyx_v_self->exist_node != 0);
-    if (__pyx_t_2) {
-
-      /* "solver_c.pyx":41
- *             self.moves = game.get_legal()
- *             if self.exist_node:
- *                 self.pn, self.dn = 1, len(self.moves)             # <<<<<<<<<<<<<<
- *             else:
- *                 self.pn, self.dn = len(self.moves), 1
- */
-      __pyx_t_5 = 1.0;
-      __pyx_t_1 = __pyx_v_self->moves;
-      __Pyx_INCREF(__pyx_t_1);
-      if (unlikely(__pyx_t_1 == Py_None)) {
-        PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-        __PYX_ERR(0, 41, __pyx_L1_error)
-      }
-      __pyx_t_7 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 41, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_v_self->pn = __pyx_t_5;
-      __pyx_v_self->dn = __pyx_t_7;
-
-      /* "solver_c.pyx":40
- *         else:
- *             self.moves = game.get_legal()
- *             if self.exist_node:             # <<<<<<<<<<<<<<
- *                 self.pn, self.dn = 1, len(self.moves)
- *             else:
- */
-      goto __pyx_L7;
-    }
-
-    /* "solver_c.pyx":43
- *                 self.pn, self.dn = 1, len(self.moves)
- *             else:
- *                 self.pn, self.dn = len(self.moves), 1             # <<<<<<<<<<<<<<
- *         #print(self.pn, self.dn, self.exist_node)
- *         game.remove_move(self.state)
- */
-    /*else*/ {
-      __pyx_t_1 = __pyx_v_self->moves;
-      __Pyx_INCREF(__pyx_t_1);
-      if (unlikely(__pyx_t_1 == Py_None)) {
-        PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-        __PYX_ERR(0, 43, __pyx_L1_error)
-      }
-      __pyx_t_7 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 43, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_5 = 1.0;
-      __pyx_v_self->pn = __pyx_t_7;
-      __pyx_v_self->dn = __pyx_t_5;
-    }
-    __pyx_L7:;
   }
-  __pyx_L5:;
+  __pyx_L4:;
 
-  /* "solver_c.pyx":45
- *                 self.pn, self.dn = len(self.moves), 1
- *         #print(self.pn, self.dn, self.exist_node)
- *         game.remove_move(self.state)             # <<<<<<<<<<<<<<
- *         # print(len(self.moves))
- * 
+  /* "solver_c.pyx":36
+ *             self.state = game.get_next()
+ *         #print(len(prestate), len(premove), len(self.state))
+ *         game.remove_move(prestate)             # <<<<<<<<<<<<<<
+ *         game.remove_move(premove)
+ *         game.update_move(self.state)
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_remove_move); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_remove_move); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_prestate) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_prestate);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "solver_c.pyx":37
+ *         #print(len(prestate), len(premove), len(self.state))
+ *         game.remove_move(prestate)
+ *         game.remove_move(premove)             # <<<<<<<<<<<<<<
+ *         game.update_move(self.state)
+ *         #print(self.state)
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_remove_move); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_premove) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_premove);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "solver_c.pyx":38
+ *         game.remove_move(prestate)
+ *         game.remove_move(premove)
+ *         game.update_move(self.state)             # <<<<<<<<<<<<<<
+ *         #print(self.state)
+ *         if game.is_terminate():
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_update_move); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -2225,17 +2033,265 @@ static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_Tre
   }
   __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_self->state) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_self->state);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "solver_c.pyx":14
+  /* "solver_c.pyx":40
+ *         game.update_move(self.state)
+ *         #print(self.state)
+ *         if game.is_terminate():             # <<<<<<<<<<<<<<
+ *             reward = game.get_reward()
+ *             if reward == 100:
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_is_terminate); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_2) {
+
+    /* "solver_c.pyx":41
+ *         #print(self.state)
+ *         if game.is_terminate():
+ *             reward = game.get_reward()             # <<<<<<<<<<<<<<
+ *             if reward == 100:
+ *                 self.pn, self.dn = 0, math.inf
+ */
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_get_reward); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 41, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_4)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+      }
+    }
+    __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_v_reward = __pyx_t_1;
+    __pyx_t_1 = 0;
+
+    /* "solver_c.pyx":42
+ *         if game.is_terminate():
+ *             reward = game.get_reward()
+ *             if reward == 100:             # <<<<<<<<<<<<<<
+ *                 self.pn, self.dn = 0, math.inf
+ *             else:
+ */
+    __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_reward, __pyx_int_100, 0x64, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 42, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    if (__pyx_t_2) {
+
+      /* "solver_c.pyx":43
+ *             reward = game.get_reward()
+ *             if reward == 100:
+ *                 self.pn, self.dn = 0, math.inf             # <<<<<<<<<<<<<<
+ *             else:
+ *                 # we treat draw as loss as well
+ */
+      __pyx_t_5 = 0.0;
+      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_math); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_inf); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_t_3); if (unlikely((__pyx_t_6 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_v_self->pn = __pyx_t_5;
+      __pyx_v_self->dn = __pyx_t_6;
+
+      /* "solver_c.pyx":42
+ *         if game.is_terminate():
+ *             reward = game.get_reward()
+ *             if reward == 100:             # <<<<<<<<<<<<<<
+ *                 self.pn, self.dn = 0, math.inf
+ *             else:
+ */
+      goto __pyx_L6;
+    }
+
+    /* "solver_c.pyx":46
+ *             else:
+ *                 # we treat draw as loss as well
+ *                 self.pn, self.dn = math.inf, 0             # <<<<<<<<<<<<<<
+ *         else:
+ *             self.moves = game.get_legal()
+ */
+    /*else*/ {
+      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_math); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_inf); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_6 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 46, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_5 = 0.0;
+      __pyx_v_self->pn = __pyx_t_6;
+      __pyx_v_self->dn = __pyx_t_5;
+    }
+    __pyx_L6:;
+
+    /* "solver_c.pyx":40
+ *         game.update_move(self.state)
+ *         #print(self.state)
+ *         if game.is_terminate():             # <<<<<<<<<<<<<<
+ *             reward = game.get_reward()
+ *             if reward == 100:
+ */
+    goto __pyx_L5;
+  }
+
+  /* "solver_c.pyx":48
+ *                 self.pn, self.dn = math.inf, 0
+ *         else:
+ *             self.moves = game.get_legal()             # <<<<<<<<<<<<<<
+ *             if self.exist_node:
+ *                 self.pn, self.dn = 1, len(self.moves)
+ */
+  /*else*/ {
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_get_legal); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_4)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+      }
+    }
+    __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 48, __pyx_L1_error)
+    __Pyx_GIVEREF(__pyx_t_1);
+    __Pyx_GOTREF(__pyx_v_self->moves);
+    __Pyx_DECREF(__pyx_v_self->moves);
+    __pyx_v_self->moves = ((PyObject*)__pyx_t_1);
+    __pyx_t_1 = 0;
+
+    /* "solver_c.pyx":49
+ *         else:
+ *             self.moves = game.get_legal()
+ *             if self.exist_node:             # <<<<<<<<<<<<<<
+ *                 self.pn, self.dn = 1, len(self.moves)
+ *             else:
+ */
+    __pyx_t_2 = (__pyx_v_self->exist_node != 0);
+    if (__pyx_t_2) {
+
+      /* "solver_c.pyx":50
+ *             self.moves = game.get_legal()
+ *             if self.exist_node:
+ *                 self.pn, self.dn = 1, len(self.moves)             # <<<<<<<<<<<<<<
+ *             else:
+ *                 self.pn, self.dn = len(self.moves), 1
+ */
+      __pyx_t_5 = 1.0;
+      __pyx_t_1 = __pyx_v_self->moves;
+      __Pyx_INCREF(__pyx_t_1);
+      if (unlikely(__pyx_t_1 == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+        __PYX_ERR(0, 50, __pyx_L1_error)
+      }
+      __pyx_t_7 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 50, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_v_self->pn = __pyx_t_5;
+      __pyx_v_self->dn = __pyx_t_7;
+
+      /* "solver_c.pyx":49
+ *         else:
+ *             self.moves = game.get_legal()
+ *             if self.exist_node:             # <<<<<<<<<<<<<<
+ *                 self.pn, self.dn = 1, len(self.moves)
+ *             else:
+ */
+      goto __pyx_L7;
+    }
+
+    /* "solver_c.pyx":52
+ *                 self.pn, self.dn = 1, len(self.moves)
+ *             else:
+ *                 self.pn, self.dn = len(self.moves), 1             # <<<<<<<<<<<<<<
+ *         #print(self.pn, self.dn, self.exist_node)
+ *         game.remove_move(self.state)
+ */
+    /*else*/ {
+      __pyx_t_1 = __pyx_v_self->moves;
+      __Pyx_INCREF(__pyx_t_1);
+      if (unlikely(__pyx_t_1 == Py_None)) {
+        PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+        __PYX_ERR(0, 52, __pyx_L1_error)
+      }
+      __pyx_t_7 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 52, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_5 = 1.0;
+      __pyx_v_self->pn = __pyx_t_7;
+      __pyx_v_self->dn = __pyx_t_5;
+    }
+    __pyx_L7:;
+  }
+  __pyx_L5:;
+
+  /* "solver_c.pyx":54
+ *                 self.pn, self.dn = len(self.moves), 1
+ *         #print(self.pn, self.dn, self.exist_node)
+ *         game.remove_move(self.state)             # <<<<<<<<<<<<<<
+ *         # print(len(self.moves))
+ *         #print('finish create node')
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_game, __pyx_n_s_remove_move); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_self->state) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_self->state);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "solver_c.pyx":19
  *         list state
  *         bint exist_node
- *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[]):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[], int d=1):             # <<<<<<<<<<<<<<
+ *         #print('start create node')
  *         self.parent = parent
- *         if parent == None:
  */
 
   /* function exit code */
@@ -2253,15 +2309,193 @@ static int __pyx_pf_8solver_c_8TreeNode___cinit__(struct __pyx_obj_8solver_c_Tre
   return __pyx_r;
 }
 
-/* "solver_c.pyx":48
- *         # print(len(self.moves))
+/* "solver_c.pyx":58
+ *         #print('finish create node')
+ * 
+ *     cpdef float dpn(self):             # <<<<<<<<<<<<<<
+ *         if self.exist_node:
+ *             return (1.0 - 1.0 / self.dn) * R + self.deep * (1.0 - R)
+ */
+
+static PyObject *__pyx_pw_8solver_c_8TreeNode_3dpn(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static float __pyx_f_8solver_c_8TreeNode_dpn(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, int __pyx_skip_dispatch) {
+  float __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  float __pyx_t_5;
+  int __pyx_t_6;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("dpn", 0);
+  /* Check if called by wrapper */
+  if (unlikely(__pyx_skip_dispatch)) ;
+  /* Check if overridden in Python */
+  else if (unlikely((Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0) || (Py_TYPE(((PyObject *)__pyx_v_self))->tp_flags & (Py_TPFLAGS_IS_ABSTRACT | Py_TPFLAGS_HEAPTYPE)))) {
+    #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP && CYTHON_USE_TYPE_SLOTS
+    static PY_UINT64_T __pyx_tp_dict_version = __PYX_DICT_VERSION_INIT, __pyx_obj_dict_version = __PYX_DICT_VERSION_INIT;
+    if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
+      PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
+      #endif
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_dpn); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_8solver_c_8TreeNode_3dpn)) {
+        __Pyx_INCREF(__pyx_t_1);
+        __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
+        if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+          __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+          if (likely(__pyx_t_4)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+            __Pyx_INCREF(__pyx_t_4);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_3, function);
+          }
+        }
+        __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+        __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __pyx_t_5 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_5 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+        __pyx_r = __pyx_t_5;
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        goto __pyx_L0;
+      }
+      #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP && CYTHON_USE_TYPE_SLOTS
+      __pyx_tp_dict_version = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
+      __pyx_obj_dict_version = __Pyx_get_object_dict_version(((PyObject *)__pyx_v_self));
+      if (unlikely(__pyx_type_dict_guard != __pyx_tp_dict_version)) {
+        __pyx_tp_dict_version = __pyx_obj_dict_version = __PYX_DICT_VERSION_INIT;
+      }
+      #endif
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_PYTYPE_LOOKUP && CYTHON_USE_TYPE_SLOTS
+    }
+    #endif
+  }
+
+  /* "solver_c.pyx":59
+ * 
+ *     cpdef float dpn(self):
+ *         if self.exist_node:             # <<<<<<<<<<<<<<
+ *             return (1.0 - 1.0 / self.dn) * R + self.deep * (1.0 - R)
+ *         else:
+ */
+  __pyx_t_6 = (__pyx_v_self->exist_node != 0);
+  if (__pyx_t_6) {
+
+    /* "solver_c.pyx":60
+ *     cpdef float dpn(self):
+ *         if self.exist_node:
+ *             return (1.0 - 1.0 / self.dn) * R + self.deep * (1.0 - R)             # <<<<<<<<<<<<<<
+ *         else:
+ *             return (1.0 - 1.0 / self.pn) * R + self.deep * (1.0 - R)
+ */
+    if (unlikely(__pyx_v_self->dn == 0)) {
+      PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+      __PYX_ERR(0, 60, __pyx_L1_error)
+    }
+    __pyx_r = (((1.0 - (1.0 / __pyx_v_self->dn)) * __pyx_v_8solver_c_R) + (__pyx_v_self->deep * (1.0 - __pyx_v_8solver_c_R)));
+    goto __pyx_L0;
+
+    /* "solver_c.pyx":59
+ * 
+ *     cpdef float dpn(self):
+ *         if self.exist_node:             # <<<<<<<<<<<<<<
+ *             return (1.0 - 1.0 / self.dn) * R + self.deep * (1.0 - R)
+ *         else:
+ */
+  }
+
+  /* "solver_c.pyx":62
+ *             return (1.0 - 1.0 / self.dn) * R + self.deep * (1.0 - R)
+ *         else:
+ *             return (1.0 - 1.0 / self.pn) * R + self.deep * (1.0 - R)             # <<<<<<<<<<<<<<
+ * 
+ *     cpdef TreeNode best_direction(self):
+ */
+  /*else*/ {
+    if (unlikely(__pyx_v_self->pn == 0)) {
+      PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+      __PYX_ERR(0, 62, __pyx_L1_error)
+    }
+    __pyx_r = (((1.0 - (1.0 / __pyx_v_self->pn)) * __pyx_v_8solver_c_R) + (__pyx_v_self->deep * (1.0 - __pyx_v_8solver_c_R)));
+    goto __pyx_L0;
+  }
+
+  /* "solver_c.pyx":58
+ *         #print('finish create node')
+ * 
+ *     cpdef float dpn(self):             # <<<<<<<<<<<<<<
+ *         if self.exist_node:
+ *             return (1.0 - 1.0 / self.dn) * R + self.deep * (1.0 - R)
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_WriteUnraisable("solver_c.TreeNode.dpn", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_8solver_c_8TreeNode_3dpn(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_3dpn(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("dpn (wrapper)", 0);
+  __pyx_r = __pyx_pf_8solver_c_8TreeNode_2dpn(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_8solver_c_8TreeNode_2dpn(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("dpn", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_8solver_c_8TreeNode_dpn(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("solver_c.TreeNode.dpn", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "solver_c.pyx":64
+ *             return (1.0 - 1.0 / self.pn) * R + self.deep * (1.0 - R)
  * 
  *     cpdef TreeNode best_direction(self):             # <<<<<<<<<<<<<<
  *         cdef int mx = -1
  *         cdef int i
  */
 
-static PyObject *__pyx_pw_8solver_c_8TreeNode_3best_direction(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_5best_direction(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_direction(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, int __pyx_skip_dispatch) {
   int __pyx_v_mx;
   int __pyx_v_i;
@@ -2288,9 +2522,9 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_best_direction); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_best_direction); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_8solver_c_8TreeNode_3best_direction)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_8solver_c_8TreeNode_5best_direction)) {
         __Pyx_XDECREF(((PyObject *)__pyx_r));
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -2305,10 +2539,10 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 64, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_8solver_c_TreeNode))))) __PYX_ERR(0, 48, __pyx_L1_error)
+        if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_8solver_c_TreeNode))))) __PYX_ERR(0, 64, __pyx_L1_error)
         __pyx_r = ((struct __pyx_obj_8solver_c_TreeNode *)__pyx_t_2);
         __pyx_t_2 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -2327,7 +2561,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
     #endif
   }
 
-  /* "solver_c.pyx":49
+  /* "solver_c.pyx":65
  * 
  *     cpdef TreeNode best_direction(self):
  *         cdef int mx = -1             # <<<<<<<<<<<<<<
@@ -2336,7 +2570,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
  */
   __pyx_v_mx = -1;
 
-  /* "solver_c.pyx":51
+  /* "solver_c.pyx":67
  *         cdef int mx = -1
  *         cdef int i
  *         if len(self.children) == 0:             # <<<<<<<<<<<<<<
@@ -2347,14 +2581,14 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 51, __pyx_L1_error)
+    __PYX_ERR(0, 67, __pyx_L1_error)
   }
-  __pyx_t_5 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_5 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_6 = ((__pyx_t_5 == 0) != 0);
   if (__pyx_t_6) {
 
-    /* "solver_c.pyx":52
+    /* "solver_c.pyx":68
  *         cdef int i
  *         if len(self.children) == 0:
  *             return None             # <<<<<<<<<<<<<<
@@ -2365,7 +2599,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
     __pyx_r = ((struct __pyx_obj_8solver_c_TreeNode *)Py_None); __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "solver_c.pyx":51
+    /* "solver_c.pyx":67
  *         cdef int mx = -1
  *         cdef int i
  *         if len(self.children) == 0:             # <<<<<<<<<<<<<<
@@ -2374,7 +2608,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
  */
   }
 
-  /* "solver_c.pyx":53
+  /* "solver_c.pyx":69
  *         if len(self.children) == 0:
  *             return None
  *         if self.exist_node:             # <<<<<<<<<<<<<<
@@ -2384,7 +2618,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
   __pyx_t_6 = (__pyx_v_self->exist_node != 0);
   if (__pyx_t_6) {
 
-    /* "solver_c.pyx":54
+    /* "solver_c.pyx":70
  *             return None
  *         if self.exist_node:
  *             for i in range(0, len(self.children)):             # <<<<<<<<<<<<<<
@@ -2395,15 +2629,15 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
     __Pyx_INCREF(__pyx_t_1);
     if (unlikely(__pyx_t_1 == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-      __PYX_ERR(0, 54, __pyx_L1_error)
+      __PYX_ERR(0, 70, __pyx_L1_error)
     }
-    __pyx_t_5 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_5 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_7 = __pyx_t_5;
     for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_i = __pyx_t_8;
 
-      /* "solver_c.pyx":55
+      /* "solver_c.pyx":71
  *         if self.exist_node:
  *             for i in range(0, len(self.children)):
  *                 if self.children[i].solved():             # <<<<<<<<<<<<<<
@@ -2412,11 +2646,11 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
  */
       if (unlikely(__pyx_v_self->children == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 55, __pyx_L1_error)
+        __PYX_ERR(0, 71, __pyx_L1_error)
       }
-      __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_solved); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_solved); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_2 = NULL;
@@ -2431,14 +2665,14 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
       }
       __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 55, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 71, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (__pyx_t_6) {
 
-        /* "solver_c.pyx":56
+        /* "solver_c.pyx":72
  *             for i in range(0, len(self.children)):
  *                 if self.children[i].solved():
  *                     continue             # <<<<<<<<<<<<<<
@@ -2447,7 +2681,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
  */
         goto __pyx_L5_continue;
 
-        /* "solver_c.pyx":55
+        /* "solver_c.pyx":71
  *         if self.exist_node:
  *             for i in range(0, len(self.children)):
  *                 if self.children[i].solved():             # <<<<<<<<<<<<<<
@@ -2456,7 +2690,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
  */
       }
 
-      /* "solver_c.pyx":57
+      /* "solver_c.pyx":73
  *                 if self.children[i].solved():
  *                     continue
  *                 if mx == -1:             # <<<<<<<<<<<<<<
@@ -2466,7 +2700,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
       __pyx_t_6 = ((__pyx_v_mx == -1L) != 0);
       if (__pyx_t_6) {
 
-        /* "solver_c.pyx":58
+        /* "solver_c.pyx":74
  *                     continue
  *                 if mx == -1:
  *                     mx = i             # <<<<<<<<<<<<<<
@@ -2475,7 +2709,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
  */
         __pyx_v_mx = __pyx_v_i;
 
-        /* "solver_c.pyx":57
+        /* "solver_c.pyx":73
  *                 if self.children[i].solved():
  *                     continue
  *                 if mx == -1:             # <<<<<<<<<<<<<<
@@ -2485,7 +2719,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
         goto __pyx_L8;
       }
 
-      /* "solver_c.pyx":59
+      /* "solver_c.pyx":75
  *                 if mx == -1:
  *                     mx = i
  *                 elif self.children[i].pn < self.children[mx].pn:             # <<<<<<<<<<<<<<
@@ -2494,30 +2728,30 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
  */
       if (unlikely(__pyx_v_self->children == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 59, __pyx_L1_error)
+        __PYX_ERR(0, 75, __pyx_L1_error)
       }
-      __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_pn); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_pn); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (unlikely(__pyx_v_self->children == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 59, __pyx_L1_error)
+        __PYX_ERR(0, 75, __pyx_L1_error)
       }
-      __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_mx, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_mx, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_pn); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 59, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_pn); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = PyObject_RichCompare(__pyx_t_3, __pyx_t_2, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+      __pyx_t_1 = PyObject_RichCompare(__pyx_t_3, __pyx_t_2, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 59, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 75, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (__pyx_t_6) {
 
-        /* "solver_c.pyx":60
+        /* "solver_c.pyx":76
  *                     mx = i
  *                 elif self.children[i].pn < self.children[mx].pn:
  *                     mx = i             # <<<<<<<<<<<<<<
@@ -2526,7 +2760,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
  */
         __pyx_v_mx = __pyx_v_i;
 
-        /* "solver_c.pyx":59
+        /* "solver_c.pyx":75
  *                 if mx == -1:
  *                     mx = i
  *                 elif self.children[i].pn < self.children[mx].pn:             # <<<<<<<<<<<<<<
@@ -2538,7 +2772,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
       __pyx_L5_continue:;
     }
 
-    /* "solver_c.pyx":53
+    /* "solver_c.pyx":69
  *         if len(self.children) == 0:
  *             return None
  *         if self.exist_node:             # <<<<<<<<<<<<<<
@@ -2548,7 +2782,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
     goto __pyx_L4;
   }
 
-  /* "solver_c.pyx":62
+  /* "solver_c.pyx":78
  *                     mx = i
  *         else:
  *             for i in range(0, len(self.children)):             # <<<<<<<<<<<<<<
@@ -2560,15 +2794,15 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
     __Pyx_INCREF(__pyx_t_1);
     if (unlikely(__pyx_t_1 == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-      __PYX_ERR(0, 62, __pyx_L1_error)
+      __PYX_ERR(0, 78, __pyx_L1_error)
     }
-    __pyx_t_5 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 62, __pyx_L1_error)
+    __pyx_t_5 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 78, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_7 = __pyx_t_5;
     for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_i = __pyx_t_8;
 
-      /* "solver_c.pyx":63
+      /* "solver_c.pyx":79
  *         else:
  *             for i in range(0, len(self.children)):
  *                 if self.children[i].solved():             # <<<<<<<<<<<<<<
@@ -2577,11 +2811,11 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
  */
       if (unlikely(__pyx_v_self->children == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 63, __pyx_L1_error)
+        __PYX_ERR(0, 79, __pyx_L1_error)
       }
-      __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 79, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_solved); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_solved); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_2 = NULL;
@@ -2596,14 +2830,14 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
       }
       __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 79, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (__pyx_t_6) {
 
-        /* "solver_c.pyx":64
+        /* "solver_c.pyx":80
  *             for i in range(0, len(self.children)):
  *                 if self.children[i].solved():
  *                     continue             # <<<<<<<<<<<<<<
@@ -2612,7 +2846,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
  */
         goto __pyx_L9_continue;
 
-        /* "solver_c.pyx":63
+        /* "solver_c.pyx":79
  *         else:
  *             for i in range(0, len(self.children)):
  *                 if self.children[i].solved():             # <<<<<<<<<<<<<<
@@ -2621,80 +2855,110 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
  */
       }
 
-      /* "solver_c.pyx":65
+      /* "solver_c.pyx":81
  *                 if self.children[i].solved():
  *                     continue
  *                 if mx == -1:             # <<<<<<<<<<<<<<
  *                     mx = i
- *                 elif self.children[i].dn < self.children[mx].dn:
+ *                 elif self.children[i].dpn() < self.children[mx].dpn():
  */
       __pyx_t_6 = ((__pyx_v_mx == -1L) != 0);
       if (__pyx_t_6) {
 
-        /* "solver_c.pyx":66
+        /* "solver_c.pyx":82
  *                     continue
  *                 if mx == -1:
  *                     mx = i             # <<<<<<<<<<<<<<
- *                 elif self.children[i].dn < self.children[mx].dn:
+ *                 elif self.children[i].dpn() < self.children[mx].dpn():
  *                     mx = i
  */
         __pyx_v_mx = __pyx_v_i;
 
-        /* "solver_c.pyx":65
+        /* "solver_c.pyx":81
  *                 if self.children[i].solved():
  *                     continue
  *                 if mx == -1:             # <<<<<<<<<<<<<<
  *                     mx = i
- *                 elif self.children[i].dn < self.children[mx].dn:
+ *                 elif self.children[i].dpn() < self.children[mx].dpn():
  */
         goto __pyx_L12;
       }
 
-      /* "solver_c.pyx":67
+      /* "solver_c.pyx":83
  *                 if mx == -1:
  *                     mx = i
- *                 elif self.children[i].dn < self.children[mx].dn:             # <<<<<<<<<<<<<<
+ *                 elif self.children[i].dpn() < self.children[mx].dpn():             # <<<<<<<<<<<<<<
  *                     mx = i
  * 
  */
       if (unlikely(__pyx_v_self->children == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 67, __pyx_L1_error)
+        __PYX_ERR(0, 83, __pyx_L1_error)
       }
-      __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_dn); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 67, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_dpn); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_t_3 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+        __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+        if (likely(__pyx_t_3)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+          __Pyx_INCREF(__pyx_t_3);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_2, function);
+        }
+      }
+      __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__pyx_v_self->children == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 67, __pyx_L1_error)
+        __PYX_ERR(0, 83, __pyx_L1_error)
       }
-      __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_mx, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_dn); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = PyObject_RichCompare(__pyx_t_3, __pyx_t_2, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_mx, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_dpn); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 83, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 67, __pyx_L1_error)
+      __pyx_t_3 = NULL;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
+        __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
+        if (likely(__pyx_t_3)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+          __Pyx_INCREF(__pyx_t_3);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_4, function);
+        }
+      }
+      __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_2, Py_LT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 83, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 83, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_6) {
 
-        /* "solver_c.pyx":68
+        /* "solver_c.pyx":84
  *                     mx = i
- *                 elif self.children[i].dn < self.children[mx].dn:
+ *                 elif self.children[i].dpn() < self.children[mx].dpn():
  *                     mx = i             # <<<<<<<<<<<<<<
  * 
  *         return self.children[mx]
  */
         __pyx_v_mx = __pyx_v_i;
 
-        /* "solver_c.pyx":67
+        /* "solver_c.pyx":83
  *                 if mx == -1:
  *                     mx = i
- *                 elif self.children[i].dn < self.children[mx].dn:             # <<<<<<<<<<<<<<
+ *                 elif self.children[i].dpn() < self.children[mx].dpn():             # <<<<<<<<<<<<<<
  *                     mx = i
  * 
  */
@@ -2705,7 +2969,7 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
   }
   __pyx_L4:;
 
-  /* "solver_c.pyx":70
+  /* "solver_c.pyx":86
  *                     mx = i
  * 
  *         return self.children[mx]             # <<<<<<<<<<<<<<
@@ -2715,17 +2979,17 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
   __Pyx_XDECREF(((PyObject *)__pyx_r));
   if (unlikely(__pyx_v_self->children == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 70, __pyx_L1_error)
+    __PYX_ERR(0, 86, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_mx, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_8solver_c_TreeNode))))) __PYX_ERR(0, 70, __pyx_L1_error)
-  __pyx_r = ((struct __pyx_obj_8solver_c_TreeNode *)__pyx_t_1);
-  __pyx_t_1 = 0;
+  __pyx_t_4 = __Pyx_GetItemInt_List(__pyx_v_self->children, __pyx_v_mx, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 86, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_8solver_c_TreeNode))))) __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_r = ((struct __pyx_obj_8solver_c_TreeNode *)__pyx_t_4);
+  __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "solver_c.pyx":48
- *         # print(len(self.moves))
+  /* "solver_c.pyx":64
+ *             return (1.0 - 1.0 / self.pn) * R + self.deep * (1.0 - R)
  * 
  *     cpdef TreeNode best_direction(self):             # <<<<<<<<<<<<<<
  *         cdef int mx = -1
@@ -2747,19 +3011,19 @@ static struct __pyx_obj_8solver_c_TreeNode *__pyx_f_8solver_c_8TreeNode_best_dir
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_8solver_c_8TreeNode_3best_direction(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_8solver_c_8TreeNode_3best_direction(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_8solver_c_8TreeNode_5best_direction(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_5best_direction(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("best_direction (wrapper)", 0);
-  __pyx_r = __pyx_pf_8solver_c_8TreeNode_2best_direction(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self));
+  __pyx_r = __pyx_pf_8solver_c_8TreeNode_4best_direction(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_8solver_c_8TreeNode_2best_direction(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self) {
+static PyObject *__pyx_pf_8solver_c_8TreeNode_4best_direction(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2768,7 +3032,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_2best_direction(struct __pyx_obj_8
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("best_direction", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((PyObject *)__pyx_f_8solver_c_8TreeNode_best_direction(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_8solver_c_8TreeNode_best_direction(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2785,7 +3049,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_2best_direction(struct __pyx_obj_8
   return __pyx_r;
 }
 
-/* "solver_c.pyx":73
+/* "solver_c.pyx":89
  * 
  * 
  *     cpdef bint solved(self):             # <<<<<<<<<<<<<<
@@ -2793,7 +3057,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_2best_direction(struct __pyx_obj_8
  *             return True
  */
 
-static PyObject *__pyx_pw_8solver_c_8TreeNode_5solved(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_7solved(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static int __pyx_f_8solver_c_8TreeNode_solved(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, int __pyx_skip_dispatch) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -2816,9 +3080,9 @@ static int __pyx_f_8solver_c_8TreeNode_solved(struct __pyx_obj_8solver_c_TreeNod
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_solved); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_solved); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_8solver_c_8TreeNode_5solved)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_8solver_c_8TreeNode_7solved)) {
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -2832,10 +3096,10 @@ static int __pyx_f_8solver_c_8TreeNode_solved(struct __pyx_obj_8solver_c_TreeNod
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 73, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_5;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -2854,47 +3118,47 @@ static int __pyx_f_8solver_c_8TreeNode_solved(struct __pyx_obj_8solver_c_TreeNod
     #endif
   }
 
-  /* "solver_c.pyx":74
+  /* "solver_c.pyx":90
  * 
  *     cpdef bint solved(self):
  *         if self.pn == math.inf or self.dn == math.inf:             # <<<<<<<<<<<<<<
  *             return True
  *         return False
  */
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->pn); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->pn); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_math); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_math); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_inf); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_inf); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (!__pyx_t_6) {
   } else {
     __pyx_t_5 = __pyx_t_6;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->dn); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->dn); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_math); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_math); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_inf); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_inf); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 90, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_5 = __pyx_t_6;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_5) {
 
-    /* "solver_c.pyx":75
+    /* "solver_c.pyx":91
  *     cpdef bint solved(self):
  *         if self.pn == math.inf or self.dn == math.inf:
  *             return True             # <<<<<<<<<<<<<<
@@ -2904,7 +3168,7 @@ static int __pyx_f_8solver_c_8TreeNode_solved(struct __pyx_obj_8solver_c_TreeNod
     __pyx_r = 1;
     goto __pyx_L0;
 
-    /* "solver_c.pyx":74
+    /* "solver_c.pyx":90
  * 
  *     cpdef bint solved(self):
  *         if self.pn == math.inf or self.dn == math.inf:             # <<<<<<<<<<<<<<
@@ -2913,7 +3177,7 @@ static int __pyx_f_8solver_c_8TreeNode_solved(struct __pyx_obj_8solver_c_TreeNod
  */
   }
 
-  /* "solver_c.pyx":76
+  /* "solver_c.pyx":92
  *         if self.pn == math.inf or self.dn == math.inf:
  *             return True
  *         return False             # <<<<<<<<<<<<<<
@@ -2923,7 +3187,7 @@ static int __pyx_f_8solver_c_8TreeNode_solved(struct __pyx_obj_8solver_c_TreeNod
   __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "solver_c.pyx":73
+  /* "solver_c.pyx":89
  * 
  * 
  *     cpdef bint solved(self):             # <<<<<<<<<<<<<<
@@ -2945,19 +3209,19 @@ static int __pyx_f_8solver_c_8TreeNode_solved(struct __pyx_obj_8solver_c_TreeNod
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_8solver_c_8TreeNode_5solved(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_8solver_c_8TreeNode_5solved(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_8solver_c_8TreeNode_7solved(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_7solved(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("solved (wrapper)", 0);
-  __pyx_r = __pyx_pf_8solver_c_8TreeNode_4solved(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self));
+  __pyx_r = __pyx_pf_8solver_c_8TreeNode_6solved(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_8solver_c_8TreeNode_4solved(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self) {
+static PyObject *__pyx_pf_8solver_c_8TreeNode_6solved(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2966,7 +3230,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_4solved(struct __pyx_obj_8solver_c
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("solved", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_f_8solver_c_8TreeNode_solved(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_f_8solver_c_8TreeNode_solved(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2983,7 +3247,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_4solved(struct __pyx_obj_8solver_c
   return __pyx_r;
 }
 
-/* "solver_c.pyx":78
+/* "solver_c.pyx":94
  *         return False
  * 
  *     cpdef expand(self, object g):             # <<<<<<<<<<<<<<
@@ -2991,7 +3255,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_4solved(struct __pyx_obj_8solver_c
  *         cdef TreeNode nxt
  */
 
-static PyObject *__pyx_pw_8solver_c_8TreeNode_7expand(PyObject *__pyx_v_self, PyObject *__pyx_v_g); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_9expand(PyObject *__pyx_v_self, PyObject *__pyx_v_g); /*proto*/
 static PyObject *__pyx_f_8solver_c_8TreeNode_expand(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_g, int __pyx_skip_dispatch) {
   PyObject *__pyx_v_valid = 0;
   struct __pyx_obj_8solver_c_TreeNode *__pyx_v_nxt = 0;
@@ -3016,9 +3280,9 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_expand(struct __pyx_obj_8solver_c_T
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_expand); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_expand); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_8solver_c_8TreeNode_7expand)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_8solver_c_8TreeNode_9expand)) {
         __Pyx_XDECREF(__pyx_r);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -3033,7 +3297,7 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_expand(struct __pyx_obj_8solver_c_T
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_g) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_g);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -3054,7 +3318,7 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_expand(struct __pyx_obj_8solver_c_T
     #endif
   }
 
-  /* "solver_c.pyx":82
+  /* "solver_c.pyx":98
  *         cdef TreeNode nxt
  *         #print('start expand')
  *         for valid in self.moves:             # <<<<<<<<<<<<<<
@@ -3063,29 +3327,29 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_expand(struct __pyx_obj_8solver_c_T
  */
   if (unlikely(__pyx_v_self->moves == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 82, __pyx_L1_error)
+    __PYX_ERR(0, 98, __pyx_L1_error)
   }
   __pyx_t_1 = __pyx_v_self->moves; __Pyx_INCREF(__pyx_t_1); __pyx_t_5 = 0;
   for (;;) {
     if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_1)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 98, __pyx_L1_error)
     #else
-    __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     #endif
-    if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 82, __pyx_L1_error)
+    if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 98, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_valid, ((PyObject*)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "solver_c.pyx":83
+    /* "solver_c.pyx":99
  *         #print('start expand')
  *         for valid in self.moves:
  *             g.update_move(self.state)             # <<<<<<<<<<<<<<
  *             g.update_move(valid)
- *             nxt = TreeNode(self, g, self.state, valid)
+ *             nxt = TreeNode(self, g, self.state, valid, self.depth + 1)
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_g, __pyx_n_s_update_move); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_g, __pyx_n_s_update_move); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -3099,19 +3363,19 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_expand(struct __pyx_obj_8solver_c_T
     }
     __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_self->state) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_self->state);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "solver_c.pyx":84
+    /* "solver_c.pyx":100
  *         for valid in self.moves:
  *             g.update_move(self.state)
  *             g.update_move(valid)             # <<<<<<<<<<<<<<
- *             nxt = TreeNode(self, g, self.state, valid)
+ *             nxt = TreeNode(self, g, self.state, valid, self.depth + 1)
  *             self.children.append(nxt)
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_g, __pyx_n_s_update_move); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_g, __pyx_n_s_update_move); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 100, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -3125,52 +3389,57 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_expand(struct __pyx_obj_8solver_c_T
     }
     __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_valid) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_valid);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "solver_c.pyx":85
+    /* "solver_c.pyx":101
  *             g.update_move(self.state)
  *             g.update_move(valid)
- *             nxt = TreeNode(self, g, self.state, valid)             # <<<<<<<<<<<<<<
+ *             nxt = TreeNode(self, g, self.state, valid, self.depth + 1)             # <<<<<<<<<<<<<<
  *             self.children.append(nxt)
  *         #print('end expand')
  */
-    __pyx_t_2 = PyTuple_New(4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_From_long((__pyx_v_self->depth + 1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = PyTuple_New(5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(((PyObject *)__pyx_v_self));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
-    PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_self));
+    PyTuple_SET_ITEM(__pyx_t_3, 0, ((PyObject *)__pyx_v_self));
     __Pyx_INCREF(__pyx_v_g);
     __Pyx_GIVEREF(__pyx_v_g);
-    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_g);
+    PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_v_g);
     __Pyx_INCREF(__pyx_v_self->state);
     __Pyx_GIVEREF(__pyx_v_self->state);
-    PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_v_self->state);
+    PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_v_self->state);
     __Pyx_INCREF(__pyx_v_valid);
     __Pyx_GIVEREF(__pyx_v_valid);
-    PyTuple_SET_ITEM(__pyx_t_2, 3, __pyx_v_valid);
-    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_8solver_c_TreeNode), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_nxt, ((struct __pyx_obj_8solver_c_TreeNode *)__pyx_t_3));
-    __pyx_t_3 = 0;
+    PyTuple_SET_ITEM(__pyx_t_3, 3, __pyx_v_valid);
+    __Pyx_GIVEREF(__pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_3, 4, __pyx_t_2);
+    __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_8solver_c_TreeNode), __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_nxt, ((struct __pyx_obj_8solver_c_TreeNode *)__pyx_t_2));
+    __pyx_t_2 = 0;
 
-    /* "solver_c.pyx":86
+    /* "solver_c.pyx":102
  *             g.update_move(valid)
- *             nxt = TreeNode(self, g, self.state, valid)
+ *             nxt = TreeNode(self, g, self.state, valid, self.depth + 1)
  *             self.children.append(nxt)             # <<<<<<<<<<<<<<
  *         #print('end expand')
  * 
  */
     if (unlikely(__pyx_v_self->children == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
-      __PYX_ERR(0, 86, __pyx_L1_error)
+      __PYX_ERR(0, 102, __pyx_L1_error)
     }
-    __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_self->children, ((PyObject *)__pyx_v_nxt)); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 86, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_self->children, ((PyObject *)__pyx_v_nxt)); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 102, __pyx_L1_error)
 
-    /* "solver_c.pyx":82
+    /* "solver_c.pyx":98
  *         cdef TreeNode nxt
  *         #print('start expand')
  *         for valid in self.moves:             # <<<<<<<<<<<<<<
@@ -3180,7 +3449,7 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_expand(struct __pyx_obj_8solver_c_T
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "solver_c.pyx":78
+  /* "solver_c.pyx":94
  *         return False
  * 
  *     cpdef expand(self, object g):             # <<<<<<<<<<<<<<
@@ -3207,19 +3476,19 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_expand(struct __pyx_obj_8solver_c_T
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_8solver_c_8TreeNode_7expand(PyObject *__pyx_v_self, PyObject *__pyx_v_g); /*proto*/
-static PyObject *__pyx_pw_8solver_c_8TreeNode_7expand(PyObject *__pyx_v_self, PyObject *__pyx_v_g) {
+static PyObject *__pyx_pw_8solver_c_8TreeNode_9expand(PyObject *__pyx_v_self, PyObject *__pyx_v_g); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_9expand(PyObject *__pyx_v_self, PyObject *__pyx_v_g) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("expand (wrapper)", 0);
-  __pyx_r = __pyx_pf_8solver_c_8TreeNode_6expand(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self), ((PyObject *)__pyx_v_g));
+  __pyx_r = __pyx_pf_8solver_c_8TreeNode_8expand(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self), ((PyObject *)__pyx_v_g));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_8solver_c_8TreeNode_6expand(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_g) {
+static PyObject *__pyx_pf_8solver_c_8TreeNode_8expand(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_g) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3228,7 +3497,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_6expand(struct __pyx_obj_8solver_c
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("expand", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_8solver_c_8TreeNode_expand(__pyx_v_self, __pyx_v_g, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_8solver_c_8TreeNode_expand(__pyx_v_self, __pyx_v_g, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3245,17 +3514,19 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_6expand(struct __pyx_obj_8solver_c
   return __pyx_r;
 }
 
-/* "solver_c.pyx":90
+/* "solver_c.pyx":106
  * 
  * 
  *     cpdef update(self):             # <<<<<<<<<<<<<<
  *         cdef TreeNode child
- * 
+ *         cdef TreeNode c = None
  */
 
-static PyObject *__pyx_pw_8solver_c_8TreeNode_9update(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_11update(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
 static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, int __pyx_skip_dispatch) {
   struct __pyx_obj_8solver_c_TreeNode *__pyx_v_child = 0;
+  struct __pyx_obj_8solver_c_TreeNode *__pyx_v_c = 0;
+  CYTHON_UNUSED long __pyx_v_mx;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3280,9 +3551,9 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_update); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_update); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_8solver_c_8TreeNode_9update)) {
+      if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_8solver_c_8TreeNode_11update)) {
         __Pyx_XDECREF(__pyx_r);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_3 = __pyx_t_1; __pyx_t_4 = NULL;
@@ -3297,7 +3568,7 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -3318,9 +3589,19 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
     #endif
   }
 
-  /* "solver_c.pyx":94
- * 
- * 
+  /* "solver_c.pyx":108
+ *     cpdef update(self):
+ *         cdef TreeNode child
+ *         cdef TreeNode c = None             # <<<<<<<<<<<<<<
+ *         if self.exist_node:
+ *             self.pn = self.children[0].pn
+ */
+  __Pyx_INCREF(Py_None);
+  __pyx_v_c = ((struct __pyx_obj_8solver_c_TreeNode *)Py_None);
+
+  /* "solver_c.pyx":109
+ *         cdef TreeNode child
+ *         cdef TreeNode c = None
  *         if self.exist_node:             # <<<<<<<<<<<<<<
  *             self.pn = self.children[0].pn
  *             self.dn = 0
@@ -3328,65 +3609,74 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
   __pyx_t_5 = (__pyx_v_self->exist_node != 0);
   if (__pyx_t_5) {
 
-    /* "solver_c.pyx":95
- * 
+    /* "solver_c.pyx":110
+ *         cdef TreeNode c = None
  *         if self.exist_node:
  *             self.pn = self.children[0].pn             # <<<<<<<<<<<<<<
  *             self.dn = 0
- *             for child in self.children:
+ *             mx = -1
  */
     if (unlikely(__pyx_v_self->children == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 95, __pyx_L1_error)
+      __PYX_ERR(0, 110, __pyx_L1_error)
     }
-    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->children, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->children, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_pn); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_pn); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 110, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_6 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 95, __pyx_L1_error)
+    __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_6 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 110, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_v_self->pn = __pyx_t_6;
 
-    /* "solver_c.pyx":96
+    /* "solver_c.pyx":111
  *         if self.exist_node:
  *             self.pn = self.children[0].pn
  *             self.dn = 0             # <<<<<<<<<<<<<<
+ *             mx = -1
  *             for child in self.children:
- *                 self.pn = min(self.pn, child.pn)
  */
     __pyx_v_self->dn = 0.0;
 
-    /* "solver_c.pyx":97
+    /* "solver_c.pyx":112
  *             self.pn = self.children[0].pn
  *             self.dn = 0
+ *             mx = -1             # <<<<<<<<<<<<<<
+ *             for child in self.children:
+ *                 self.pn = min(self.pn, child.pn)
+ */
+    __pyx_v_mx = -1L;
+
+    /* "solver_c.pyx":113
+ *             self.dn = 0
+ *             mx = -1
  *             for child in self.children:             # <<<<<<<<<<<<<<
  *                 self.pn = min(self.pn, child.pn)
  *                 self.dn += child.dn
  */
     if (unlikely(__pyx_v_self->children == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-      __PYX_ERR(0, 97, __pyx_L1_error)
+      __PYX_ERR(0, 113, __pyx_L1_error)
     }
     __pyx_t_2 = __pyx_v_self->children; __Pyx_INCREF(__pyx_t_2); __pyx_t_7 = 0;
     for (;;) {
       if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_2)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 97, __pyx_L1_error)
+      __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 113, __pyx_L1_error)
       #else
-      __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
+      __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       #endif
-      if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_8solver_c_TreeNode))))) __PYX_ERR(0, 97, __pyx_L1_error)
+      if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_8solver_c_TreeNode))))) __PYX_ERR(0, 113, __pyx_L1_error)
       __Pyx_XDECREF_SET(__pyx_v_child, ((struct __pyx_obj_8solver_c_TreeNode *)__pyx_t_1));
       __pyx_t_1 = 0;
 
-      /* "solver_c.pyx":98
- *             self.dn = 0
+      /* "solver_c.pyx":114
+ *             mx = -1
  *             for child in self.children:
  *                 self.pn = min(self.pn, child.pn)             # <<<<<<<<<<<<<<
  *                 self.dn += child.dn
- *         else:
+ *                 if child.solved() == False:
  */
       __pyx_t_6 = __pyx_v_child->pn;
       __pyx_t_8 = __pyx_v_self->pn;
@@ -3397,18 +3687,99 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
       }
       __pyx_v_self->pn = __pyx_t_9;
 
-      /* "solver_c.pyx":99
+      /* "solver_c.pyx":115
  *             for child in self.children:
  *                 self.pn = min(self.pn, child.pn)
  *                 self.dn += child.dn             # <<<<<<<<<<<<<<
- *         else:
- *             self.dn = self.children[0].dn
+ *                 if child.solved() == False:
+ *                     if c == None:
  */
       __pyx_v_self->dn = (__pyx_v_self->dn + __pyx_v_child->dn);
 
-      /* "solver_c.pyx":97
- *             self.pn = self.children[0].pn
+      /* "solver_c.pyx":116
+ *                 self.pn = min(self.pn, child.pn)
+ *                 self.dn += child.dn
+ *                 if child.solved() == False:             # <<<<<<<<<<<<<<
+ *                     if c == None:
+ *                         c = child
+ */
+      __pyx_t_5 = ((((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_child->__pyx_vtab)->solved(__pyx_v_child, 0) == 0) != 0);
+      if (__pyx_t_5) {
+
+        /* "solver_c.pyx":117
+ *                 self.dn += child.dn
+ *                 if child.solved() == False:
+ *                     if c == None:             # <<<<<<<<<<<<<<
+ *                         c = child
+ *                     elif c.dpn() > child.dpn():
+ */
+        __pyx_t_1 = PyObject_RichCompare(((PyObject *)__pyx_v_c), Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 117, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        if (__pyx_t_5) {
+
+          /* "solver_c.pyx":118
+ *                 if child.solved() == False:
+ *                     if c == None:
+ *                         c = child             # <<<<<<<<<<<<<<
+ *                     elif c.dpn() > child.dpn():
+ *                         c = child
+ */
+          __Pyx_INCREF(((PyObject *)__pyx_v_child));
+          __Pyx_DECREF_SET(__pyx_v_c, __pyx_v_child);
+
+          /* "solver_c.pyx":117
+ *                 self.dn += child.dn
+ *                 if child.solved() == False:
+ *                     if c == None:             # <<<<<<<<<<<<<<
+ *                         c = child
+ *                     elif c.dpn() > child.dpn():
+ */
+          goto __pyx_L7;
+        }
+
+        /* "solver_c.pyx":119
+ *                     if c == None:
+ *                         c = child
+ *                     elif c.dpn() > child.dpn():             # <<<<<<<<<<<<<<
+ *                         c = child
+ * 
+ */
+        __pyx_t_5 = ((((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_c->__pyx_vtab)->dpn(__pyx_v_c, 0) > ((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_child->__pyx_vtab)->dpn(__pyx_v_child, 0)) != 0);
+        if (__pyx_t_5) {
+
+          /* "solver_c.pyx":120
+ *                         c = child
+ *                     elif c.dpn() > child.dpn():
+ *                         c = child             # <<<<<<<<<<<<<<
+ * 
+ *         else:
+ */
+          __Pyx_INCREF(((PyObject *)__pyx_v_child));
+          __Pyx_DECREF_SET(__pyx_v_c, __pyx_v_child);
+
+          /* "solver_c.pyx":119
+ *                     if c == None:
+ *                         c = child
+ *                     elif c.dpn() > child.dpn():             # <<<<<<<<<<<<<<
+ *                         c = child
+ * 
+ */
+        }
+        __pyx_L7:;
+
+        /* "solver_c.pyx":116
+ *                 self.pn = min(self.pn, child.pn)
+ *                 self.dn += child.dn
+ *                 if child.solved() == False:             # <<<<<<<<<<<<<<
+ *                     if c == None:
+ *                         c = child
+ */
+      }
+
+      /* "solver_c.pyx":113
  *             self.dn = 0
+ *             mx = -1
  *             for child in self.children:             # <<<<<<<<<<<<<<
  *                 self.pn = min(self.pn, child.pn)
  *                 self.dn += child.dn
@@ -3416,9 +3787,9 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "solver_c.pyx":94
- * 
- * 
+    /* "solver_c.pyx":109
+ *         cdef TreeNode child
+ *         cdef TreeNode c = None
  *         if self.exist_node:             # <<<<<<<<<<<<<<
  *             self.pn = self.children[0].pn
  *             self.dn = 0
@@ -3426,8 +3797,8 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
     goto __pyx_L3;
   }
 
-  /* "solver_c.pyx":101
- *                 self.dn += child.dn
+  /* "solver_c.pyx":123
+ * 
  *         else:
  *             self.dn = self.children[0].dn             # <<<<<<<<<<<<<<
  *             self.pn = 0
@@ -3436,18 +3807,18 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
   /*else*/ {
     if (unlikely(__pyx_v_self->children == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 101, __pyx_L1_error)
+      __PYX_ERR(0, 123, __pyx_L1_error)
     }
-    __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_self->children, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_self->children, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_dn); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_dn); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_9 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 101, __pyx_L1_error)
+    __pyx_t_9 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_9 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_self->dn = __pyx_t_9;
 
-    /* "solver_c.pyx":102
+    /* "solver_c.pyx":124
  *         else:
  *             self.dn = self.children[0].dn
  *             self.pn = 0             # <<<<<<<<<<<<<<
@@ -3456,7 +3827,7 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
  */
     __pyx_v_self->pn = 0.0;
 
-    /* "solver_c.pyx":103
+    /* "solver_c.pyx":125
  *             self.dn = self.children[0].dn
  *             self.pn = 0
  *             for child in self.children:             # <<<<<<<<<<<<<<
@@ -3465,27 +3836,27 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
  */
     if (unlikely(__pyx_v_self->children == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-      __PYX_ERR(0, 103, __pyx_L1_error)
+      __PYX_ERR(0, 125, __pyx_L1_error)
     }
     __pyx_t_1 = __pyx_v_self->children; __Pyx_INCREF(__pyx_t_1); __pyx_t_7 = 0;
     for (;;) {
       if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_1)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 103, __pyx_L1_error)
+      __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 125, __pyx_L1_error)
       #else
-      __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L1_error)
+      __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 125, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       #endif
-      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_8solver_c_TreeNode))))) __PYX_ERR(0, 103, __pyx_L1_error)
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_8solver_c_TreeNode))))) __PYX_ERR(0, 125, __pyx_L1_error)
       __Pyx_XDECREF_SET(__pyx_v_child, ((struct __pyx_obj_8solver_c_TreeNode *)__pyx_t_2));
       __pyx_t_2 = 0;
 
-      /* "solver_c.pyx":104
+      /* "solver_c.pyx":126
  *             self.pn = 0
  *             for child in self.children:
  *                 self.dn = min(self.dn, child.dn)             # <<<<<<<<<<<<<<
  *                 self.pn += child.pn
- * 
+ *                 if child.solved() == False:
  */
       __pyx_t_9 = __pyx_v_child->dn;
       __pyx_t_6 = __pyx_v_self->dn;
@@ -3496,16 +3867,116 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
       }
       __pyx_v_self->dn = __pyx_t_8;
 
-      /* "solver_c.pyx":105
+      /* "solver_c.pyx":127
  *             for child in self.children:
  *                 self.dn = min(self.dn, child.dn)
  *                 self.pn += child.pn             # <<<<<<<<<<<<<<
- * 
- *         if self.solved():
+ *                 if child.solved() == False:
+ *                     if child.solved() == False:
  */
       __pyx_v_self->pn = (__pyx_v_self->pn + __pyx_v_child->pn);
 
-      /* "solver_c.pyx":103
+      /* "solver_c.pyx":128
+ *                 self.dn = min(self.dn, child.dn)
+ *                 self.pn += child.pn
+ *                 if child.solved() == False:             # <<<<<<<<<<<<<<
+ *                     if child.solved() == False:
+ *                         if c == None:
+ */
+      __pyx_t_5 = ((((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_child->__pyx_vtab)->solved(__pyx_v_child, 0) == 0) != 0);
+      if (__pyx_t_5) {
+
+        /* "solver_c.pyx":129
+ *                 self.pn += child.pn
+ *                 if child.solved() == False:
+ *                     if child.solved() == False:             # <<<<<<<<<<<<<<
+ *                         if c == None:
+ *                             c = child
+ */
+        __pyx_t_5 = ((((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_child->__pyx_vtab)->solved(__pyx_v_child, 0) == 0) != 0);
+        if (__pyx_t_5) {
+
+          /* "solver_c.pyx":130
+ *                 if child.solved() == False:
+ *                     if child.solved() == False:
+ *                         if c == None:             # <<<<<<<<<<<<<<
+ *                             c = child
+ *                         elif c.dpn() > child.dpn():
+ */
+          __pyx_t_2 = PyObject_RichCompare(((PyObject *)__pyx_v_c), Py_None, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 130, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 130, __pyx_L1_error)
+          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+          if (__pyx_t_5) {
+
+            /* "solver_c.pyx":131
+ *                     if child.solved() == False:
+ *                         if c == None:
+ *                             c = child             # <<<<<<<<<<<<<<
+ *                         elif c.dpn() > child.dpn():
+ *                             c = child
+ */
+            __Pyx_INCREF(((PyObject *)__pyx_v_child));
+            __Pyx_DECREF_SET(__pyx_v_c, __pyx_v_child);
+
+            /* "solver_c.pyx":130
+ *                 if child.solved() == False:
+ *                     if child.solved() == False:
+ *                         if c == None:             # <<<<<<<<<<<<<<
+ *                             c = child
+ *                         elif c.dpn() > child.dpn():
+ */
+            goto __pyx_L12;
+          }
+
+          /* "solver_c.pyx":132
+ *                         if c == None:
+ *                             c = child
+ *                         elif c.dpn() > child.dpn():             # <<<<<<<<<<<<<<
+ *                             c = child
+ * 
+ */
+          __pyx_t_5 = ((((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_c->__pyx_vtab)->dpn(__pyx_v_c, 0) > ((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_child->__pyx_vtab)->dpn(__pyx_v_child, 0)) != 0);
+          if (__pyx_t_5) {
+
+            /* "solver_c.pyx":133
+ *                             c = child
+ *                         elif c.dpn() > child.dpn():
+ *                             c = child             # <<<<<<<<<<<<<<
+ * 
+ *         if c != None:
+ */
+            __Pyx_INCREF(((PyObject *)__pyx_v_child));
+            __Pyx_DECREF_SET(__pyx_v_c, __pyx_v_child);
+
+            /* "solver_c.pyx":132
+ *                         if c == None:
+ *                             c = child
+ *                         elif c.dpn() > child.dpn():             # <<<<<<<<<<<<<<
+ *                             c = child
+ * 
+ */
+          }
+          __pyx_L12:;
+
+          /* "solver_c.pyx":129
+ *                 self.pn += child.pn
+ *                 if child.solved() == False:
+ *                     if child.solved() == False:             # <<<<<<<<<<<<<<
+ *                         if c == None:
+ *                             c = child
+ */
+        }
+
+        /* "solver_c.pyx":128
+ *                 self.dn = min(self.dn, child.dn)
+ *                 self.pn += child.pn
+ *                 if child.solved() == False:             # <<<<<<<<<<<<<<
+ *                     if child.solved() == False:
+ *                         if c == None:
+ */
+      }
+
+      /* "solver_c.pyx":125
  *             self.dn = self.children[0].dn
  *             self.pn = 0
  *             for child in self.children:             # <<<<<<<<<<<<<<
@@ -3517,8 +3988,39 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
   }
   __pyx_L3:;
 
-  /* "solver_c.pyx":107
- *                 self.pn += child.pn
+  /* "solver_c.pyx":135
+ *                             c = child
+ * 
+ *         if c != None:             # <<<<<<<<<<<<<<
+ *             self.deep = c.deep
+ * 
+ */
+  __pyx_t_1 = PyObject_RichCompare(((PyObject *)__pyx_v_c), Py_None, Py_NE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 135, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_5) {
+
+    /* "solver_c.pyx":136
+ * 
+ *         if c != None:
+ *             self.deep = c.deep             # <<<<<<<<<<<<<<
+ * 
+ *         if self.solved():
+ */
+    __pyx_t_8 = __pyx_v_c->deep;
+    __pyx_v_self->deep = __pyx_t_8;
+
+    /* "solver_c.pyx":135
+ *                             c = child
+ * 
+ *         if c != None:             # <<<<<<<<<<<<<<
+ *             self.deep = c.deep
+ * 
+ */
+  }
+
+  /* "solver_c.pyx":138
+ *             self.deep = c.deep
  * 
  *         if self.solved():             # <<<<<<<<<<<<<<
  *             self.children.clear()
@@ -3527,14 +4029,14 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
   __pyx_t_5 = (((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_self->__pyx_vtab)->solved(__pyx_v_self, 0) != 0);
   if (__pyx_t_5) {
 
-    /* "solver_c.pyx":108
+    /* "solver_c.pyx":139
  * 
  *         if self.solved():
  *             self.children.clear()             # <<<<<<<<<<<<<<
  * 
- * cdef class Solver:
+ * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->children, __pyx_n_s_clear); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->children, __pyx_n_s_clear); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_3 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3548,13 +4050,13 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
     }
     __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "solver_c.pyx":107
- *                 self.pn += child.pn
+    /* "solver_c.pyx":138
+ *             self.deep = c.deep
  * 
  *         if self.solved():             # <<<<<<<<<<<<<<
  *             self.children.clear()
@@ -3562,12 +4064,12 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
  */
   }
 
-  /* "solver_c.pyx":90
+  /* "solver_c.pyx":106
  * 
  * 
  *     cpdef update(self):             # <<<<<<<<<<<<<<
  *         cdef TreeNode child
- * 
+ *         cdef TreeNode c = None
  */
 
   /* function exit code */
@@ -3582,25 +4084,26 @@ static PyObject *__pyx_f_8solver_c_8TreeNode_update(struct __pyx_obj_8solver_c_T
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_child);
+  __Pyx_XDECREF((PyObject *)__pyx_v_c);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_8solver_c_8TreeNode_9update(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_8solver_c_8TreeNode_9update(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_8solver_c_8TreeNode_11update(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_11update(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("update (wrapper)", 0);
-  __pyx_r = __pyx_pf_8solver_c_8TreeNode_8update(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self));
+  __pyx_r = __pyx_pf_8solver_c_8TreeNode_10update(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_8solver_c_8TreeNode_8update(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self) {
+static PyObject *__pyx_pf_8solver_c_8TreeNode_10update(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3609,7 +4112,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_8update(struct __pyx_obj_8solver_c
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("update", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_8solver_c_8TreeNode_update(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_8solver_c_8TreeNode_update(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3626,7 +4129,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_8update(struct __pyx_obj_8solver_c
   return __pyx_r;
 }
 
-/* "solver_c.pyx":7
+/* "solver_c.pyx":10
  * 
  *     cdef public:
  *         TreeNode parent             # <<<<<<<<<<<<<<
@@ -3684,7 +4187,7 @@ static int __pyx_pf_8solver_c_8TreeNode_6parent_2__set__(struct __pyx_obj_8solve
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(((__pyx_v_value) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_value, __pyx_ptype_8solver_c_TreeNode))))) __PYX_ERR(0, 7, __pyx_L1_error)
+  if (!(likely(((__pyx_v_value) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_value, __pyx_ptype_8solver_c_TreeNode))))) __PYX_ERR(0, 10, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -3734,12 +4237,12 @@ static int __pyx_pf_8solver_c_8TreeNode_6parent_4__del__(struct __pyx_obj_8solve
   return __pyx_r;
 }
 
-/* "solver_c.pyx":8
+/* "solver_c.pyx":11
  *     cdef public:
  *         TreeNode parent
  *         float pn             # <<<<<<<<<<<<<<
  *         float dn
- *         list children
+ *         float deep
  */
 
 /* Python wrapper */
@@ -3764,7 +4267,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_2pn___get__(struct __pyx_obj_8solv
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->pn); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->pn); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3802,7 +4305,7 @@ static int __pyx_pf_8solver_c_8TreeNode_2pn_2__set__(struct __pyx_obj_8solver_c_
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 11, __pyx_L1_error)
   __pyx_v_self->pn = __pyx_t_1;
 
   /* function exit code */
@@ -3816,12 +4319,12 @@ static int __pyx_pf_8solver_c_8TreeNode_2pn_2__set__(struct __pyx_obj_8solver_c_
   return __pyx_r;
 }
 
-/* "solver_c.pyx":9
+/* "solver_c.pyx":12
  *         TreeNode parent
  *         float pn
  *         float dn             # <<<<<<<<<<<<<<
- *         list children
- *         list moves
+ *         float deep
+ *         int depth
  */
 
 /* Python wrapper */
@@ -3846,7 +4349,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_2dn___get__(struct __pyx_obj_8solv
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->dn); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->dn); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3884,7 +4387,7 @@ static int __pyx_pf_8solver_c_8TreeNode_2dn_2__set__(struct __pyx_obj_8solver_c_
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 9, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 12, __pyx_L1_error)
   __pyx_v_self->dn = __pyx_t_1;
 
   /* function exit code */
@@ -3898,9 +4401,173 @@ static int __pyx_pf_8solver_c_8TreeNode_2dn_2__set__(struct __pyx_obj_8solver_c_
   return __pyx_r;
 }
 
-/* "solver_c.pyx":10
+/* "solver_c.pyx":13
  *         float pn
  *         float dn
+ *         float deep             # <<<<<<<<<<<<<<
+ *         int depth
+ *         list children
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_8solver_c_8TreeNode_4deep_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_4deep_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_8solver_c_8TreeNode_4deep___get__(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_8solver_c_8TreeNode_4deep___get__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__get__", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->deep); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("solver_c.TreeNode.deep.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static int __pyx_pw_8solver_c_8TreeNode_4deep_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_8solver_c_8TreeNode_4deep_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_8solver_c_8TreeNode_4deep_2__set__(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_8solver_c_8TreeNode_4deep_2__set__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  float __pyx_t_1;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__set__", 0);
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_v_self->deep = __pyx_t_1;
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("solver_c.TreeNode.deep.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "solver_c.pyx":14
+ *         float dn
+ *         float deep
+ *         int depth             # <<<<<<<<<<<<<<
+ *         list children
+ *         list moves
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_8solver_c_8TreeNode_5depth_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_5depth_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_8solver_c_8TreeNode_5depth___get__(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_8solver_c_8TreeNode_5depth___get__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__get__", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->depth); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("solver_c.TreeNode.depth.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static int __pyx_pw_8solver_c_8TreeNode_5depth_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_8solver_c_8TreeNode_5depth_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_8solver_c_8TreeNode_5depth_2__set__(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_8solver_c_8TreeNode_5depth_2__set__(struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__set__", 0);
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_value); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_v_self->depth = __pyx_t_1;
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("solver_c.TreeNode.depth.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "solver_c.pyx":15
+ *         float deep
+ *         int depth
  *         list children             # <<<<<<<<<<<<<<
  *         list moves
  *         list state
@@ -3956,7 +4623,7 @@ static int __pyx_pf_8solver_c_8TreeNode_8children_2__set__(struct __pyx_obj_8sol
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyList_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 10, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 15, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -4006,8 +4673,8 @@ static int __pyx_pf_8solver_c_8TreeNode_8children_4__del__(struct __pyx_obj_8sol
   return __pyx_r;
 }
 
-/* "solver_c.pyx":11
- *         float dn
+/* "solver_c.pyx":16
+ *         int depth
  *         list children
  *         list moves             # <<<<<<<<<<<<<<
  *         list state
@@ -4064,7 +4731,7 @@ static int __pyx_pf_8solver_c_8TreeNode_5moves_2__set__(struct __pyx_obj_8solver
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyList_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 11, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 16, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -4114,12 +4781,12 @@ static int __pyx_pf_8solver_c_8TreeNode_5moves_4__del__(struct __pyx_obj_8solver
   return __pyx_r;
 }
 
-/* "solver_c.pyx":12
+/* "solver_c.pyx":17
  *         list children
  *         list moves
  *         list state             # <<<<<<<<<<<<<<
  *         bint exist_node
- *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[]):
+ *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[], int d=1):
  */
 
 /* Python wrapper */
@@ -4172,7 +4839,7 @@ static int __pyx_pf_8solver_c_8TreeNode_5state_2__set__(struct __pyx_obj_8solver
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyList_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||((void)PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 17, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -4222,12 +4889,12 @@ static int __pyx_pf_8solver_c_8TreeNode_5state_4__del__(struct __pyx_obj_8solver
   return __pyx_r;
 }
 
-/* "solver_c.pyx":13
+/* "solver_c.pyx":18
  *         list moves
  *         list state
  *         bint exist_node             # <<<<<<<<<<<<<<
- *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[]):
- *         self.parent = parent
+ *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[], int d=1):
+ *         #print('start create node')
  */
 
 /* Python wrapper */
@@ -4252,7 +4919,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_10exist_node___get__(struct __pyx_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->exist_node); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->exist_node); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4290,7 +4957,7 @@ static int __pyx_pf_8solver_c_8TreeNode_10exist_node_2__set__(struct __pyx_obj_8
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_value); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_value); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L1_error)
   __pyx_v_self->exist_node = __pyx_t_1;
 
   /* function exit code */
@@ -4311,19 +4978,19 @@ static int __pyx_pf_8solver_c_8TreeNode_10exist_node_2__set__(struct __pyx_obj_8
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_8solver_c_8TreeNode_11__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_8solver_c_8TreeNode_11__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_8solver_c_8TreeNode_13__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_13__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_8solver_c_8TreeNode_10__reduce_cython__(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self));
+  __pyx_r = __pyx_pf_8solver_c_8TreeNode_12__reduce_cython__(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_8solver_c_8TreeNode_10__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self) {
+static PyObject *__pyx_pf_8solver_c_8TreeNode_12__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4368,19 +5035,19 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_10__reduce_cython__(CYTHON_UNUSED 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_8solver_c_8TreeNode_13__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_8solver_c_8TreeNode_13__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_8solver_c_8TreeNode_15__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_8solver_c_8TreeNode_15__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_8solver_c_8TreeNode_12__setstate_cython__(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_8solver_c_8TreeNode_14__setstate_cython__(((struct __pyx_obj_8solver_c_TreeNode *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_8solver_c_8TreeNode_12__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_8solver_c_8TreeNode_14__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_8solver_c_TreeNode *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4417,7 +5084,7 @@ static PyObject *__pyx_pf_8solver_c_8TreeNode_12__setstate_cython__(CYTHON_UNUSE
   return __pyx_r;
 }
 
-/* "solver_c.pyx":115
+/* "solver_c.pyx":148
  *         object game
  *         int time_limit
  *     def __cinit__(self, str player, str name, int tl):             # <<<<<<<<<<<<<<
@@ -4462,17 +5129,17 @@ static int __pyx_pw_8solver_c_6Solver_1__cinit__(PyObject *__pyx_v_self, PyObjec
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_name)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 1); __PYX_ERR(0, 115, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 1); __PYX_ERR(0, 148, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_tl)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 2); __PYX_ERR(0, 115, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, 2); __PYX_ERR(0, 148, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 115, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 148, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -4483,18 +5150,18 @@ static int __pyx_pw_8solver_c_6Solver_1__cinit__(PyObject *__pyx_v_self, PyObjec
     }
     __pyx_v_player = ((PyObject*)values[0]);
     __pyx_v_name = ((PyObject*)values[1]);
-    __pyx_v_tl = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_tl == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 115, __pyx_L3_error)
+    __pyx_v_tl = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_tl == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 148, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 115, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 148, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("solver_c.Solver.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_player), (&PyString_Type), 1, "player", 1))) __PYX_ERR(0, 115, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_name), (&PyString_Type), 1, "name", 1))) __PYX_ERR(0, 115, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_player), (&PyString_Type), 1, "player", 1))) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_name), (&PyString_Type), 1, "name", 1))) __PYX_ERR(0, 148, __pyx_L1_error)
   __pyx_r = __pyx_pf_8solver_c_6Solver___cinit__(((struct __pyx_obj_8solver_c_Solver *)__pyx_v_self), __pyx_v_player, __pyx_v_name, __pyx_v_tl);
 
   /* function exit code */
@@ -4519,14 +5186,14 @@ static int __pyx_pf_8solver_c_6Solver___cinit__(struct __pyx_obj_8solver_c_Solve
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "solver_c.pyx":116
+  /* "solver_c.pyx":149
  *         int time_limit
  *     def __cinit__(self, str player, str name, int tl):
  *         self.game = board(player, name)             # <<<<<<<<<<<<<<
  *         self.time_limit = tl
  *         self.root = TreeNode(None, self.game)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_board); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_board); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 149, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -4543,7 +5210,7 @@ static int __pyx_pf_8solver_c_6Solver___cinit__(struct __pyx_obj_8solver_c_Solve
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_player, __pyx_v_name};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -4551,13 +5218,13 @@ static int __pyx_pf_8solver_c_6Solver___cinit__(struct __pyx_obj_8solver_c_Solve
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_player, __pyx_v_name};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -4568,7 +5235,7 @@ static int __pyx_pf_8solver_c_6Solver___cinit__(struct __pyx_obj_8solver_c_Solve
     __Pyx_INCREF(__pyx_v_name);
     __Pyx_GIVEREF(__pyx_v_name);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_name);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -4579,7 +5246,7 @@ static int __pyx_pf_8solver_c_6Solver___cinit__(struct __pyx_obj_8solver_c_Solve
   __pyx_v_self->game = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "solver_c.pyx":117
+  /* "solver_c.pyx":150
  *     def __cinit__(self, str player, str name, int tl):
  *         self.game = board(player, name)
  *         self.time_limit = tl             # <<<<<<<<<<<<<<
@@ -4588,14 +5255,14 @@ static int __pyx_pf_8solver_c_6Solver___cinit__(struct __pyx_obj_8solver_c_Solve
  */
   __pyx_v_self->time_limit = __pyx_v_tl;
 
-  /* "solver_c.pyx":118
+  /* "solver_c.pyx":151
  *         self.game = board(player, name)
  *         self.time_limit = tl
  *         self.root = TreeNode(None, self.game)             # <<<<<<<<<<<<<<
  * 
  *     cpdef solve(self):
  */
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(Py_None);
@@ -4603,7 +5270,7 @@ static int __pyx_pf_8solver_c_6Solver___cinit__(struct __pyx_obj_8solver_c_Solve
   __Pyx_INCREF(__pyx_v_self->game);
   __Pyx_GIVEREF(__pyx_v_self->game);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_self->game);
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_8solver_c_TreeNode), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_8solver_c_TreeNode), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_GIVEREF(__pyx_t_2);
@@ -4612,7 +5279,7 @@ static int __pyx_pf_8solver_c_6Solver___cinit__(struct __pyx_obj_8solver_c_Solve
   __pyx_v_self->root = ((struct __pyx_obj_8solver_c_TreeNode *)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "solver_c.pyx":115
+  /* "solver_c.pyx":148
  *         object game
  *         int time_limit
  *     def __cinit__(self, str player, str name, int tl):             # <<<<<<<<<<<<<<
@@ -4635,11 +5302,11 @@ static int __pyx_pf_8solver_c_6Solver___cinit__(struct __pyx_obj_8solver_c_Solve
   return __pyx_r;
 }
 
-/* "solver_c.pyx":120
+/* "solver_c.pyx":153
  *         self.root = TreeNode(None, self.game)
  * 
  *     cpdef solve(self):             # <<<<<<<<<<<<<<
- *         cdef float start = time.time()
+ *         cdef float start = time.perf_counter()
  *         cdef TreeNode curr = self.root
  */
 
@@ -4651,6 +5318,7 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
   float __pyx_v_pn;
   float __pyx_v_dn;
   struct __pyx_obj_8solver_c_TreeNode *__pyx_v_nxt = 0;
+  PyObject *__pyx_v_d = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4674,7 +5342,7 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_solve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_solve); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 153, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_8solver_c_6Solver_3solve)) {
         __Pyx_XDECREF(__pyx_r);
@@ -4691,7 +5359,7 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 120, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -4712,16 +5380,16 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
     #endif
   }
 
-  /* "solver_c.pyx":121
+  /* "solver_c.pyx":154
  * 
  *     cpdef solve(self):
- *         cdef float start = time.time()             # <<<<<<<<<<<<<<
+ *         cdef float start = time.perf_counter()             # <<<<<<<<<<<<<<
  *         cdef TreeNode curr = self.root
  *         cdef int iter = 0
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_perf_counter); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -4736,16 +5404,16 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
   }
   __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_5 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_5 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_5 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_5 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_start = __pyx_t_5;
 
-  /* "solver_c.pyx":122
+  /* "solver_c.pyx":155
  *     cpdef solve(self):
- *         cdef float start = time.time()
+ *         cdef float start = time.perf_counter()
  *         cdef TreeNode curr = self.root             # <<<<<<<<<<<<<<
  *         cdef int iter = 0
  *         cdef float pn
@@ -4755,8 +5423,8 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
   __pyx_v_curr = ((struct __pyx_obj_8solver_c_TreeNode *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "solver_c.pyx":123
- *         cdef float start = time.time()
+  /* "solver_c.pyx":156
+ *         cdef float start = time.perf_counter()
  *         cdef TreeNode curr = self.root
  *         cdef int iter = 0             # <<<<<<<<<<<<<<
  *         cdef float pn
@@ -4764,50 +5432,50 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
  */
   __pyx_v_iter = 0;
 
-  /* "solver_c.pyx":127
+  /* "solver_c.pyx":160
  *         cdef float dn
  *         cdef TreeNode nxt
  *         while not self.root.solved():             # <<<<<<<<<<<<<<
  *             iter += 1
- *             if iter % 1 == 0:
+ *             if iter % 100 == 0:
  */
   while (1) {
     __pyx_t_6 = ((!(((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_self->root->__pyx_vtab)->solved(__pyx_v_self->root, 0) != 0)) != 0);
     if (!__pyx_t_6) break;
 
-    /* "solver_c.pyx":128
+    /* "solver_c.pyx":161
  *         cdef TreeNode nxt
  *         while not self.root.solved():
  *             iter += 1             # <<<<<<<<<<<<<<
- *             if iter % 1 == 0:
+ *             if iter % 100 == 0:
  *                 print('Iteration', iter, 'pn=', self.root.pn, 'dn=', self.root.dn)
  */
     __pyx_v_iter = (__pyx_v_iter + 1);
 
-    /* "solver_c.pyx":129
+    /* "solver_c.pyx":162
  *         while not self.root.solved():
  *             iter += 1
- *             if iter % 1 == 0:             # <<<<<<<<<<<<<<
+ *             if iter % 100 == 0:             # <<<<<<<<<<<<<<
  *                 print('Iteration', iter, 'pn=', self.root.pn, 'dn=', self.root.dn)
  * 
  */
-    __pyx_t_6 = ((__Pyx_mod_long(__pyx_v_iter, 1) == 0) != 0);
+    __pyx_t_6 = ((__Pyx_mod_long(__pyx_v_iter, 0x64) == 0) != 0);
     if (__pyx_t_6) {
 
-      /* "solver_c.pyx":130
+      /* "solver_c.pyx":163
  *             iter += 1
- *             if iter % 1 == 0:
+ *             if iter % 100 == 0:
  *                 print('Iteration', iter, 'pn=', self.root.pn, 'dn=', self.root.dn)             # <<<<<<<<<<<<<<
  * 
  *             while len(curr.children) != 0:
  */
-      __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_iter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_iter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 163, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->root->pn); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 130, __pyx_L1_error)
+      __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->root->pn); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 163, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->root->dn); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 130, __pyx_L1_error)
+      __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->root->dn); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_4 = PyTuple_New(6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 130, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 163, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_INCREF(__pyx_n_s_Iteration);
       __Pyx_GIVEREF(__pyx_n_s_Iteration);
@@ -4827,19 +5495,19 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
       __pyx_t_1 = 0;
       __pyx_t_3 = 0;
       __pyx_t_2 = 0;
-      if (__Pyx_PrintOne(0, __pyx_t_4) < 0) __PYX_ERR(0, 130, __pyx_L1_error)
+      if (__Pyx_PrintOne(0, __pyx_t_4) < 0) __PYX_ERR(0, 163, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "solver_c.pyx":129
+      /* "solver_c.pyx":162
  *         while not self.root.solved():
  *             iter += 1
- *             if iter % 1 == 0:             # <<<<<<<<<<<<<<
+ *             if iter % 100 == 0:             # <<<<<<<<<<<<<<
  *                 print('Iteration', iter, 'pn=', self.root.pn, 'dn=', self.root.dn)
  * 
  */
     }
 
-    /* "solver_c.pyx":132
+    /* "solver_c.pyx":165
  *                 print('Iteration', iter, 'pn=', self.root.pn, 'dn=', self.root.dn)
  * 
  *             while len(curr.children) != 0:             # <<<<<<<<<<<<<<
@@ -4851,26 +5519,26 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
       __Pyx_INCREF(__pyx_t_4);
       if (unlikely(__pyx_t_4 == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-        __PYX_ERR(0, 132, __pyx_L1_error)
+        __PYX_ERR(0, 165, __pyx_L1_error)
       }
-      __pyx_t_7 = PyList_GET_SIZE(__pyx_t_4); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 132, __pyx_L1_error)
+      __pyx_t_7 = PyList_GET_SIZE(__pyx_t_4); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 165, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_6 = ((__pyx_t_7 != 0) != 0);
       if (!__pyx_t_6) break;
 
-      /* "solver_c.pyx":133
+      /* "solver_c.pyx":166
  * 
  *             while len(curr.children) != 0:
  *                 nxt = curr.best_direction()             # <<<<<<<<<<<<<<
  *                 curr = nxt
  * 
  */
-      __pyx_t_4 = ((PyObject *)((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_curr->__pyx_vtab)->best_direction(__pyx_v_curr, 0)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
+      __pyx_t_4 = ((PyObject *)((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_curr->__pyx_vtab)->best_direction(__pyx_v_curr, 0)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 166, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_XDECREF_SET(__pyx_v_nxt, ((struct __pyx_obj_8solver_c_TreeNode *)__pyx_t_4));
       __pyx_t_4 = 0;
 
-      /* "solver_c.pyx":134
+      /* "solver_c.pyx":167
  *             while len(curr.children) != 0:
  *                 nxt = curr.best_direction()
  *                 curr = nxt             # <<<<<<<<<<<<<<
@@ -4881,7 +5549,7 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
       __Pyx_DECREF_SET(__pyx_v_curr, __pyx_v_nxt);
     }
 
-    /* "solver_c.pyx":136
+    /* "solver_c.pyx":169
  *                 curr = nxt
  * 
  *             curr.expand(self.game)             # <<<<<<<<<<<<<<
@@ -4890,12 +5558,12 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
  */
     __pyx_t_4 = __pyx_v_self->game;
     __Pyx_INCREF(__pyx_t_4);
-    __pyx_t_2 = ((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_curr->__pyx_vtab)->expand(__pyx_v_curr, __pyx_t_4, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
+    __pyx_t_2 = ((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_curr->__pyx_vtab)->expand(__pyx_v_curr, __pyx_t_4, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 169, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "solver_c.pyx":138
+    /* "solver_c.pyx":171
  *             curr.expand(self.game)
  * 
  *             while curr != None:             # <<<<<<<<<<<<<<
@@ -4903,46 +5571,58 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
  *                 dn = curr.dn
  */
     while (1) {
-      __pyx_t_2 = PyObject_RichCompare(((PyObject *)__pyx_v_curr), Py_None, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 138, __pyx_L1_error)
-      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 138, __pyx_L1_error)
+      __pyx_t_2 = PyObject_RichCompare(((PyObject *)__pyx_v_curr), Py_None, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 171, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 171, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (!__pyx_t_6) break;
 
-      /* "solver_c.pyx":139
+      /* "solver_c.pyx":172
  * 
  *             while curr != None:
  *                 pn = curr.pn             # <<<<<<<<<<<<<<
  *                 dn = curr.dn
- *                 curr.update()
+ *                 d = curr.deep
  */
       __pyx_t_5 = __pyx_v_curr->pn;
       __pyx_v_pn = __pyx_t_5;
 
-      /* "solver_c.pyx":140
+      /* "solver_c.pyx":173
  *             while curr != None:
  *                 pn = curr.pn
  *                 dn = curr.dn             # <<<<<<<<<<<<<<
+ *                 d = curr.deep
  *                 curr.update()
- *                 if curr.pn == pn and curr.dn == dn:
  */
       __pyx_t_5 = __pyx_v_curr->dn;
       __pyx_v_dn = __pyx_t_5;
 
-      /* "solver_c.pyx":141
+      /* "solver_c.pyx":174
  *                 pn = curr.pn
  *                 dn = curr.dn
+ *                 d = curr.deep             # <<<<<<<<<<<<<<
+ *                 curr.update()
+ *                 if curr.pn == pn and curr.dn == dn and curr.deep == d:
+ */
+      __pyx_t_2 = PyFloat_FromDouble(__pyx_v_curr->deep); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 174, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_XDECREF_SET(__pyx_v_d, __pyx_t_2);
+      __pyx_t_2 = 0;
+
+      /* "solver_c.pyx":175
+ *                 dn = curr.dn
+ *                 d = curr.deep
  *                 curr.update()             # <<<<<<<<<<<<<<
- *                 if curr.pn == pn and curr.dn == dn:
+ *                 if curr.pn == pn and curr.dn == dn and curr.deep == d:
  *                     break
  */
-      __pyx_t_2 = ((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_curr->__pyx_vtab)->update(__pyx_v_curr, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 141, __pyx_L1_error)
+      __pyx_t_2 = ((struct __pyx_vtabstruct_8solver_c_TreeNode *)__pyx_v_curr->__pyx_vtab)->update(__pyx_v_curr, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 175, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "solver_c.pyx":142
- *                 dn = curr.dn
+      /* "solver_c.pyx":176
+ *                 d = curr.deep
  *                 curr.update()
- *                 if curr.pn == pn and curr.dn == dn:             # <<<<<<<<<<<<<<
+ *                 if curr.pn == pn and curr.dn == dn and curr.deep == d:             # <<<<<<<<<<<<<<
  *                     break
  *                 if curr.parent != None:
  */
@@ -4953,131 +5633,142 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
         goto __pyx_L11_bool_binop_done;
       }
       __pyx_t_8 = ((__pyx_v_curr->dn == __pyx_v_dn) != 0);
+      if (__pyx_t_8) {
+      } else {
+        __pyx_t_6 = __pyx_t_8;
+        goto __pyx_L11_bool_binop_done;
+      }
+      __pyx_t_2 = PyFloat_FromDouble(__pyx_v_curr->deep); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_4 = PyObject_RichCompare(__pyx_t_2, __pyx_v_d, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 176, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 176, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_6 = __pyx_t_8;
       __pyx_L11_bool_binop_done:;
       if (__pyx_t_6) {
 
-        /* "solver_c.pyx":143
+        /* "solver_c.pyx":177
  *                 curr.update()
- *                 if curr.pn == pn and curr.dn == dn:
+ *                 if curr.pn == pn and curr.dn == dn and curr.deep == d:
  *                     break             # <<<<<<<<<<<<<<
  *                 if curr.parent != None:
  *                     curr = curr.parent
  */
         goto __pyx_L9_break;
 
-        /* "solver_c.pyx":142
- *                 dn = curr.dn
+        /* "solver_c.pyx":176
+ *                 d = curr.deep
  *                 curr.update()
- *                 if curr.pn == pn and curr.dn == dn:             # <<<<<<<<<<<<<<
+ *                 if curr.pn == pn and curr.dn == dn and curr.deep == d:             # <<<<<<<<<<<<<<
  *                     break
  *                 if curr.parent != None:
  */
       }
 
-      /* "solver_c.pyx":144
- *                 if curr.pn == pn and curr.dn == dn:
+      /* "solver_c.pyx":178
+ *                 if curr.pn == pn and curr.dn == dn and curr.deep == d:
  *                     break
  *                 if curr.parent != None:             # <<<<<<<<<<<<<<
  *                     curr = curr.parent
  *                 else:
  */
-      __pyx_t_2 = PyObject_RichCompare(((PyObject *)__pyx_v_curr->parent), Py_None, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 144, __pyx_L1_error)
-      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_4 = PyObject_RichCompare(((PyObject *)__pyx_v_curr->parent), Py_None, Py_NE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 178, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 178, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_6) {
 
-        /* "solver_c.pyx":145
+        /* "solver_c.pyx":179
  *                     break
  *                 if curr.parent != None:
  *                     curr = curr.parent             # <<<<<<<<<<<<<<
  *                 else:
  *                     break
  */
-        __pyx_t_2 = ((PyObject *)__pyx_v_curr->parent);
-        __Pyx_INCREF(__pyx_t_2);
-        __Pyx_DECREF_SET(__pyx_v_curr, ((struct __pyx_obj_8solver_c_TreeNode *)__pyx_t_2));
-        __pyx_t_2 = 0;
+        __pyx_t_4 = ((PyObject *)__pyx_v_curr->parent);
+        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_DECREF_SET(__pyx_v_curr, ((struct __pyx_obj_8solver_c_TreeNode *)__pyx_t_4));
+        __pyx_t_4 = 0;
 
-        /* "solver_c.pyx":144
- *                 if curr.pn == pn and curr.dn == dn:
+        /* "solver_c.pyx":178
+ *                 if curr.pn == pn and curr.dn == dn and curr.deep == d:
  *                     break
  *                 if curr.parent != None:             # <<<<<<<<<<<<<<
  *                     curr = curr.parent
  *                 else:
  */
-        goto __pyx_L13;
+        goto __pyx_L14;
       }
 
-      /* "solver_c.pyx":147
+      /* "solver_c.pyx":181
  *                     curr = curr.parent
  *                 else:
  *                     break             # <<<<<<<<<<<<<<
- *             if time.time() - start > self.time_limit:
+ *             if time.perf_counter() - start > self.time_limit:
  *                 break
  */
       /*else*/ {
         goto __pyx_L9_break;
       }
-      __pyx_L13:;
+      __pyx_L14:;
     }
     __pyx_L9_break:;
 
-    /* "solver_c.pyx":148
+    /* "solver_c.pyx":182
  *                 else:
  *                     break
- *             if time.time() - start > self.time_limit:             # <<<<<<<<<<<<<<
+ *             if time.perf_counter() - start > self.time_limit:             # <<<<<<<<<<<<<<
  *                 break
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_time); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 148, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 182, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_perf_counter); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 182, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = NULL;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-      if (likely(__pyx_t_4)) {
+      __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_2)) {
         PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-        __Pyx_INCREF(__pyx_t_4);
+        __Pyx_INCREF(__pyx_t_2);
         __Pyx_INCREF(function);
         __Pyx_DECREF_SET(__pyx_t_3, function);
       }
     }
-    __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 148, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_start); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyNumber_Subtract(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_4 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 182, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->time_limit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_start); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 182, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_GT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_2 = PyNumber_Subtract(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 182, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 148, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->time_limit); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 182, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = PyObject_RichCompare(__pyx_t_2, __pyx_t_3, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 182, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 182, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_6) {
 
-      /* "solver_c.pyx":149
+      /* "solver_c.pyx":183
  *                     break
- *             if time.time() - start > self.time_limit:
+ *             if time.perf_counter() - start > self.time_limit:
  *                 break             # <<<<<<<<<<<<<<
  * 
- *         if self.root.dn == math.inf:
+ *         print('Time consumed', (time.perf_counter() - start))
  */
       goto __pyx_L4_break;
 
-      /* "solver_c.pyx":148
+      /* "solver_c.pyx":182
  *                 else:
  *                     break
- *             if time.time() - start > self.time_limit:             # <<<<<<<<<<<<<<
+ *             if time.perf_counter() - start > self.time_limit:             # <<<<<<<<<<<<<<
  *                 break
  * 
  */
@@ -5085,87 +5776,131 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
   }
   __pyx_L4_break:;
 
-  /* "solver_c.pyx":151
+  /* "solver_c.pyx":185
  *                 break
  * 
+ *         print('Time consumed', (time.perf_counter() - start))             # <<<<<<<<<<<<<<
+ *         if self.root.dn == math.inf:
+ *             print('SAT')
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_perf_counter); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_start); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyNumber_Subtract(__pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_kp_s_Time_consumed);
+  __Pyx_GIVEREF(__pyx_kp_s_Time_consumed);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_kp_s_Time_consumed);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_3);
+  __pyx_t_3 = 0;
+  if (__Pyx_PrintOne(0, __pyx_t_2) < 0) __PYX_ERR(0, 185, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "solver_c.pyx":186
+ * 
+ *         print('Time consumed', (time.perf_counter() - start))
  *         if self.root.dn == math.inf:             # <<<<<<<<<<<<<<
  *             print('SAT')
  *         elif self.root.pn == math.inf:
  */
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->root->dn); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->root->dn); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_math); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_math); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_inf); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_inf); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_6) {
 
-    /* "solver_c.pyx":152
- * 
+    /* "solver_c.pyx":187
+ *         print('Time consumed', (time.perf_counter() - start))
  *         if self.root.dn == math.inf:
  *             print('SAT')             # <<<<<<<<<<<<<<
  *         elif self.root.pn == math.inf:
  *             print('UNSAT')
  */
-    if (__Pyx_PrintOne(0, __pyx_n_s_SAT) < 0) __PYX_ERR(0, 152, __pyx_L1_error)
+    if (__Pyx_PrintOne(0, __pyx_n_s_SAT) < 0) __PYX_ERR(0, 187, __pyx_L1_error)
 
-    /* "solver_c.pyx":151
- *                 break
+    /* "solver_c.pyx":186
  * 
+ *         print('Time consumed', (time.perf_counter() - start))
  *         if self.root.dn == math.inf:             # <<<<<<<<<<<<<<
  *             print('SAT')
  *         elif self.root.pn == math.inf:
  */
-    goto __pyx_L15;
+    goto __pyx_L16;
   }
 
-  /* "solver_c.pyx":153
+  /* "solver_c.pyx":188
  *         if self.root.dn == math.inf:
  *             print('SAT')
  *         elif self.root.pn == math.inf:             # <<<<<<<<<<<<<<
  *             print('UNSAT')
  *         else:
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->root->pn); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->root->pn); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 188, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_math); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_math); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_inf); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_inf); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 188, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyObject_RichCompare(__pyx_t_3, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_4 = PyObject_RichCompare(__pyx_t_3, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 188, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_6) {
 
-    /* "solver_c.pyx":154
+    /* "solver_c.pyx":189
  *             print('SAT')
  *         elif self.root.pn == math.inf:
  *             print('UNSAT')             # <<<<<<<<<<<<<<
  *         else:
  *             print('UNKNOWN')
  */
-    if (__Pyx_PrintOne(0, __pyx_n_s_UNSAT) < 0) __PYX_ERR(0, 154, __pyx_L1_error)
+    if (__Pyx_PrintOne(0, __pyx_n_s_UNSAT) < 0) __PYX_ERR(0, 189, __pyx_L1_error)
 
-    /* "solver_c.pyx":153
+    /* "solver_c.pyx":188
  *         if self.root.dn == math.inf:
  *             print('SAT')
  *         elif self.root.pn == math.inf:             # <<<<<<<<<<<<<<
  *             print('UNSAT')
  *         else:
  */
-    goto __pyx_L15;
+    goto __pyx_L16;
   }
 
-  /* "solver_c.pyx":156
+  /* "solver_c.pyx":191
  *             print('UNSAT')
  *         else:
  *             print('UNKNOWN')             # <<<<<<<<<<<<<<
@@ -5173,15 +5908,15 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
  * 
  */
   /*else*/ {
-    if (__Pyx_PrintOne(0, __pyx_n_s_UNKNOWN) < 0) __PYX_ERR(0, 156, __pyx_L1_error)
+    if (__Pyx_PrintOne(0, __pyx_n_s_UNKNOWN) < 0) __PYX_ERR(0, 191, __pyx_L1_error)
   }
-  __pyx_L15:;
+  __pyx_L16:;
 
-  /* "solver_c.pyx":120
+  /* "solver_c.pyx":153
  *         self.root = TreeNode(None, self.game)
  * 
  *     cpdef solve(self):             # <<<<<<<<<<<<<<
- *         cdef float start = time.time()
+ *         cdef float start = time.perf_counter()
  *         cdef TreeNode curr = self.root
  */
 
@@ -5198,6 +5933,7 @@ static PyObject *__pyx_f_8solver_c_6Solver_solve(struct __pyx_obj_8solver_c_Solv
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_curr);
   __Pyx_XDECREF((PyObject *)__pyx_v_nxt);
+  __Pyx_XDECREF(__pyx_v_d);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -5225,7 +5961,7 @@ static PyObject *__pyx_pf_8solver_c_6Solver_2solve(struct __pyx_obj_8solver_c_So
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("solve", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_8solver_c_6Solver_solve(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_8solver_c_6Solver_solve(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 153, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5242,7 +5978,7 @@ static PyObject *__pyx_pf_8solver_c_6Solver_2solve(struct __pyx_obj_8solver_c_So
   return __pyx_r;
 }
 
-/* "solver_c.pyx":112
+/* "solver_c.pyx":145
  * cdef class Solver:
  *     cdef public:
  *         TreeNode root             # <<<<<<<<<<<<<<
@@ -5300,7 +6036,7 @@ static int __pyx_pf_8solver_c_6Solver_4root_2__set__(struct __pyx_obj_8solver_c_
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(((__pyx_v_value) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_value, __pyx_ptype_8solver_c_TreeNode))))) __PYX_ERR(0, 112, __pyx_L1_error)
+  if (!(likely(((__pyx_v_value) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_value, __pyx_ptype_8solver_c_TreeNode))))) __PYX_ERR(0, 145, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -5350,7 +6086,7 @@ static int __pyx_pf_8solver_c_6Solver_4root_4__del__(struct __pyx_obj_8solver_c_
   return __pyx_r;
 }
 
-/* "solver_c.pyx":113
+/* "solver_c.pyx":146
  *     cdef public:
  *         TreeNode root
  *         object game             # <<<<<<<<<<<<<<
@@ -5445,7 +6181,7 @@ static int __pyx_pf_8solver_c_6Solver_4game_4__del__(struct __pyx_obj_8solver_c_
   return __pyx_r;
 }
 
-/* "solver_c.pyx":114
+/* "solver_c.pyx":147
  *         TreeNode root
  *         object game
  *         int time_limit             # <<<<<<<<<<<<<<
@@ -5475,7 +6211,7 @@ static PyObject *__pyx_pf_8solver_c_6Solver_10time_limit___get__(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->time_limit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->time_limit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5513,7 +6249,7 @@ static int __pyx_pf_8solver_c_6Solver_10time_limit_2__set__(struct __pyx_obj_8so
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_value); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 114, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_value); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 147, __pyx_L1_error)
   __pyx_v_self->time_limit = __pyx_t_1;
 
   /* function exit code */
@@ -5755,6 +6491,34 @@ static int __pyx_setprop_8solver_c_8TreeNode_dn(PyObject *o, PyObject *v, CYTHON
   }
 }
 
+static PyObject *__pyx_getprop_8solver_c_8TreeNode_deep(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_8solver_c_8TreeNode_4deep_1__get__(o);
+}
+
+static int __pyx_setprop_8solver_c_8TreeNode_deep(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+  if (v) {
+    return __pyx_pw_8solver_c_8TreeNode_4deep_3__set__(o, v);
+  }
+  else {
+    PyErr_SetString(PyExc_NotImplementedError, "__del__");
+    return -1;
+  }
+}
+
+static PyObject *__pyx_getprop_8solver_c_8TreeNode_depth(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_8solver_c_8TreeNode_5depth_1__get__(o);
+}
+
+static int __pyx_setprop_8solver_c_8TreeNode_depth(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+  if (v) {
+    return __pyx_pw_8solver_c_8TreeNode_5depth_3__set__(o, v);
+  }
+  else {
+    PyErr_SetString(PyExc_NotImplementedError, "__del__");
+    return -1;
+  }
+}
+
 static PyObject *__pyx_getprop_8solver_c_8TreeNode_children(PyObject *o, CYTHON_UNUSED void *x) {
   return __pyx_pw_8solver_c_8TreeNode_8children_1__get__(o);
 }
@@ -5809,12 +6573,13 @@ static int __pyx_setprop_8solver_c_8TreeNode_exist_node(PyObject *o, PyObject *v
 }
 
 static PyMethodDef __pyx_methods_8solver_c_TreeNode[] = {
-  {"best_direction", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_3best_direction, METH_NOARGS, 0},
-  {"solved", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_5solved, METH_NOARGS, 0},
-  {"expand", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_7expand, METH_O, 0},
-  {"update", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_9update, METH_NOARGS, 0},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_11__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_13__setstate_cython__, METH_O, 0},
+  {"dpn", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_3dpn, METH_NOARGS, 0},
+  {"best_direction", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_5best_direction, METH_NOARGS, 0},
+  {"solved", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_7solved, METH_NOARGS, 0},
+  {"expand", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_9expand, METH_O, 0},
+  {"update", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_11update, METH_NOARGS, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_13__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_8solver_c_8TreeNode_15__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
@@ -5822,6 +6587,8 @@ static struct PyGetSetDef __pyx_getsets_8solver_c_TreeNode[] = {
   {(char *)"parent", __pyx_getprop_8solver_c_8TreeNode_parent, __pyx_setprop_8solver_c_8TreeNode_parent, (char *)0, 0},
   {(char *)"pn", __pyx_getprop_8solver_c_8TreeNode_pn, __pyx_setprop_8solver_c_8TreeNode_pn, (char *)0, 0},
   {(char *)"dn", __pyx_getprop_8solver_c_8TreeNode_dn, __pyx_setprop_8solver_c_8TreeNode_dn, (char *)0, 0},
+  {(char *)"deep", __pyx_getprop_8solver_c_8TreeNode_deep, __pyx_setprop_8solver_c_8TreeNode_deep, (char *)0, 0},
+  {(char *)"depth", __pyx_getprop_8solver_c_8TreeNode_depth, __pyx_setprop_8solver_c_8TreeNode_depth, (char *)0, 0},
   {(char *)"children", __pyx_getprop_8solver_c_8TreeNode_children, __pyx_setprop_8solver_c_8TreeNode_children, (char *)0, 0},
   {(char *)"moves", __pyx_getprop_8solver_c_8TreeNode_moves, __pyx_setprop_8solver_c_8TreeNode_moves, (char *)0, 0},
   {(char *)"state", __pyx_getprop_8solver_c_8TreeNode_state, __pyx_setprop_8solver_c_8TreeNode_state, (char *)0, 0},
@@ -6134,6 +6901,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Iteration, __pyx_k_Iteration, sizeof(__pyx_k_Iteration), 0, 0, 1, 1},
   {&__pyx_n_s_SAT, __pyx_k_SAT, sizeof(__pyx_k_SAT), 0, 0, 1, 1},
   {&__pyx_n_s_Solver, __pyx_k_Solver, sizeof(__pyx_k_Solver), 0, 0, 1, 1},
+  {&__pyx_kp_s_Time_consumed, __pyx_k_Time_consumed, sizeof(__pyx_k_Time_consumed), 0, 0, 1, 0},
   {&__pyx_n_s_TreeNode, __pyx_k_TreeNode, sizeof(__pyx_k_TreeNode), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_n_s_UNKNOWN, __pyx_k_UNKNOWN, sizeof(__pyx_k_UNKNOWN), 0, 0, 1, 1},
@@ -6142,8 +6910,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_board, __pyx_k_board, sizeof(__pyx_k_board), 0, 0, 1, 1},
   {&__pyx_n_s_clear, __pyx_k_clear, sizeof(__pyx_k_clear), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
+  {&__pyx_n_s_d, __pyx_k_d, sizeof(__pyx_k_d), 0, 0, 1, 1},
   {&__pyx_n_s_dn, __pyx_k_dn, sizeof(__pyx_k_dn), 0, 0, 1, 1},
   {&__pyx_kp_s_dn_2, __pyx_k_dn_2, sizeof(__pyx_k_dn_2), 0, 0, 1, 0},
+  {&__pyx_n_s_dpn, __pyx_k_dpn, sizeof(__pyx_k_dpn), 0, 0, 1, 1},
   {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
   {&__pyx_n_s_expand, __pyx_k_expand, sizeof(__pyx_k_expand), 0, 0, 1, 1},
   {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
@@ -6162,6 +6932,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_name_2, __pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 0, 1, 1},
   {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
   {&__pyx_n_s_parent, __pyx_k_parent, sizeof(__pyx_k_parent), 0, 0, 1, 1},
+  {&__pyx_n_s_perf_counter, __pyx_k_perf_counter, sizeof(__pyx_k_perf_counter), 0, 0, 1, 1},
   {&__pyx_n_s_player, __pyx_k_player, sizeof(__pyx_k_player), 0, 0, 1, 1},
   {&__pyx_n_s_pn, __pyx_k_pn, sizeof(__pyx_k_pn), 0, 0, 1, 1},
   {&__pyx_kp_s_pn_2, __pyx_k_pn_2, sizeof(__pyx_k_pn_2), 0, 0, 1, 0},
@@ -6186,7 +6957,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 70, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 2, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
@@ -6289,33 +7060,34 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
   __pyx_vtabptr_8solver_c_TreeNode = &__pyx_vtable_8solver_c_TreeNode;
+  __pyx_vtable_8solver_c_TreeNode.dpn = (float (*)(struct __pyx_obj_8solver_c_TreeNode *, int __pyx_skip_dispatch))__pyx_f_8solver_c_8TreeNode_dpn;
   __pyx_vtable_8solver_c_TreeNode.best_direction = (struct __pyx_obj_8solver_c_TreeNode *(*)(struct __pyx_obj_8solver_c_TreeNode *, int __pyx_skip_dispatch))__pyx_f_8solver_c_8TreeNode_best_direction;
   __pyx_vtable_8solver_c_TreeNode.solved = (int (*)(struct __pyx_obj_8solver_c_TreeNode *, int __pyx_skip_dispatch))__pyx_f_8solver_c_8TreeNode_solved;
   __pyx_vtable_8solver_c_TreeNode.expand = (PyObject *(*)(struct __pyx_obj_8solver_c_TreeNode *, PyObject *, int __pyx_skip_dispatch))__pyx_f_8solver_c_8TreeNode_expand;
   __pyx_vtable_8solver_c_TreeNode.update = (PyObject *(*)(struct __pyx_obj_8solver_c_TreeNode *, int __pyx_skip_dispatch))__pyx_f_8solver_c_8TreeNode_update;
-  if (PyType_Ready(&__pyx_type_8solver_c_TreeNode) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_8solver_c_TreeNode) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_8solver_c_TreeNode.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_8solver_c_TreeNode.tp_dictoffset && __pyx_type_8solver_c_TreeNode.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_8solver_c_TreeNode.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_8solver_c_TreeNode.tp_dict, __pyx_vtabptr_8solver_c_TreeNode) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_TreeNode, (PyObject *)&__pyx_type_8solver_c_TreeNode) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_8solver_c_TreeNode) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_8solver_c_TreeNode.tp_dict, __pyx_vtabptr_8solver_c_TreeNode) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_TreeNode, (PyObject *)&__pyx_type_8solver_c_TreeNode) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_8solver_c_TreeNode) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
   __pyx_ptype_8solver_c_TreeNode = &__pyx_type_8solver_c_TreeNode;
   __pyx_vtabptr_8solver_c_Solver = &__pyx_vtable_8solver_c_Solver;
   __pyx_vtable_8solver_c_Solver.solve = (PyObject *(*)(struct __pyx_obj_8solver_c_Solver *, int __pyx_skip_dispatch))__pyx_f_8solver_c_6Solver_solve;
-  if (PyType_Ready(&__pyx_type_8solver_c_Solver) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_8solver_c_Solver) < 0) __PYX_ERR(0, 143, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_8solver_c_Solver.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_8solver_c_Solver.tp_dictoffset && __pyx_type_8solver_c_Solver.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_8solver_c_Solver.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (__Pyx_SetVtable(__pyx_type_8solver_c_Solver.tp_dict, __pyx_vtabptr_8solver_c_Solver) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Solver, (PyObject *)&__pyx_type_8solver_c_Solver) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_8solver_c_Solver) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_8solver_c_Solver.tp_dict, __pyx_vtabptr_8solver_c_Solver) < 0) __PYX_ERR(0, 143, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Solver, (PyObject *)&__pyx_type_8solver_c_Solver) < 0) __PYX_ERR(0, 143, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_8solver_c_Solver) < 0) __PYX_ERR(0, 143, __pyx_L1_error)
   __pyx_ptype_8solver_c_Solver = &__pyx_type_8solver_c_Solver;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -6551,8 +7323,8 @@ if (!__Pyx_RefNanny) {
 
   /* "solver_c.pyx":1
  * from board import board             # <<<<<<<<<<<<<<
- * import time
  * import math
+ * import time
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -6570,40 +7342,49 @@ if (!__Pyx_RefNanny) {
 
   /* "solver_c.pyx":2
  * from board import board
- * import time             # <<<<<<<<<<<<<<
- * import math
- * cdef class TreeNode:
+ * import math             # <<<<<<<<<<<<<<
+ * import time
+ * 
  */
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_time, 0, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_math, 0, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_time, __pyx_t_2) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_math, __pyx_t_2) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "solver_c.pyx":3
  * from board import board
- * import time
- * import math             # <<<<<<<<<<<<<<
- * cdef class TreeNode:
+ * import math
+ * import time             # <<<<<<<<<<<<<<
  * 
+ * cdef float R = 0.5
  */
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_math, 0, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 3, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_time, 0, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_math, __pyx_t_2) < 0) __PYX_ERR(0, 3, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_time, __pyx_t_2) < 0) __PYX_ERR(0, 3, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "solver_c.pyx":14
+  /* "solver_c.pyx":5
+ * import time
+ * 
+ * cdef float R = 0.5             # <<<<<<<<<<<<<<
+ * 
+ * cdef class TreeNode:
+ */
+  __pyx_v_8solver_c_R = 0.5;
+
+  /* "solver_c.pyx":19
  *         list state
  *         bint exist_node
- *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[]):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, TreeNode parent, object game, list prestate=[], list premove=[], int d=1):             # <<<<<<<<<<<<<<
+ *         #print('start create node')
  *         self.parent = parent
- *         if parent == None:
  */
-  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_k_ = ((PyObject*)__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_k__2 = ((PyObject*)__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_2);
@@ -6611,8 +7392,8 @@ if (!__Pyx_RefNanny) {
 
   /* "solver_c.pyx":1
  * from board import board             # <<<<<<<<<<<<<<
- * import time
  * import math
+ * import time
  */
   __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -7254,6 +8035,70 @@ static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
     return __Pyx_GetBuiltinName(name);
 }
 
+/* PyErrFetchRestore */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+}
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+}
+#endif
+
+/* WriteUnraisableException */
+static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+    __Pyx_PyThreadState_declare
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+    else state = (PyGILState_STATE)0;
+#endif
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
+}
+
 /* ExtTypeTest */
 static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
     if (unlikely(!type)) {
@@ -7352,70 +8197,6 @@ static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, 
     }
 #endif
     return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-}
-
-/* PyErrFetchRestore */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    tmp_type = tstate->curexc_type;
-    tmp_value = tstate->curexc_value;
-    tmp_tb = tstate->curexc_traceback;
-    tstate->curexc_type = type;
-    tstate->curexc_value = value;
-    tstate->curexc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-}
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    *type = tstate->curexc_type;
-    *value = tstate->curexc_value;
-    *tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
-}
-#endif
-
-/* WriteUnraisableException */
-static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
-                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
-                                  int full_traceback, CYTHON_UNUSED int nogil) {
-    PyObject *old_exc, *old_val, *old_tb;
-    PyObject *ctx;
-    __Pyx_PyThreadState_declare
-#ifdef WITH_THREAD
-    PyGILState_STATE state;
-    if (nogil)
-        state = PyGILState_Ensure();
-    else state = (PyGILState_STATE)0;
-#endif
-    __Pyx_PyThreadState_assign
-    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
-    if (full_traceback) {
-        Py_XINCREF(old_exc);
-        Py_XINCREF(old_val);
-        Py_XINCREF(old_tb);
-        __Pyx_ErrRestore(old_exc, old_val, old_tb);
-        PyErr_PrintEx(1);
-    }
-    #if PY_MAJOR_VERSION < 3
-    ctx = PyString_FromString(name);
-    #else
-    ctx = PyUnicode_FromString(name);
-    #endif
-    __Pyx_ErrRestore(old_exc, old_val, old_tb);
-    if (!ctx) {
-        PyErr_WriteUnraisable(Py_None);
-    } else {
-        PyErr_WriteUnraisable(ctx);
-        Py_DECREF(ctx);
-    }
-#ifdef WITH_THREAD
-    if (nogil)
-        PyGILState_Release(state);
-#endif
 }
 
 /* RaiseException */

@@ -42,7 +42,7 @@ goal(black, 0) :- line(red).
 
 cellOpen(X, Y) :- x(X), y(Y), not(true(cell(X, Y, red))), not(true(cell(X, Y, black))). 
 
-columnOpen(X) :- cellOpen(X, 5).
+columnOpen(X) :- cellOpen(X, 4).
 
 columnEmpty(X) :- cellOpen(X, 1).
 
@@ -66,15 +66,22 @@ line(Player) :- true(cell(X1, Y4, Player)), succ(X1, X2), succ(X2, X3), succ(X3,
 succ(1, 2).
 succ(2, 3).
 succ(3, 4).
-succ(4, 5).
+%succ(4, 5).
+%succ(5, 6).
+%succ(6, 7).
+
 
 x(1).
 x(2).
 x(3). 
 x(4).
-x(5).
+%x(5).
+%x(6).
+%x(7).
 y(1). 
 y(2). 
 y(3).
 y(4).
-y(5).
+%y(5).
+%y(6).
+

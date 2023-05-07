@@ -56,7 +56,7 @@ cdef class board:
         for i in range(len(fact)):
             nxt = fact[i]['X']
             result.append(f'true({nxt})')
-        return result
+        return list(set(result))
 
     cpdef list get_init(self):
         cdef list fact = list(self.prolog.query('init(X)'))
@@ -66,4 +66,4 @@ cdef class board:
         for i in range(len(fact)):
             nxt = fact[i]['X']
             result.append(f'true({nxt})')
-        return result
+        return list(set(result))

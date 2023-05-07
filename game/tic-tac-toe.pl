@@ -21,8 +21,8 @@ next(control(oplayer)) :- true(control(xplayer)).
 next(control(xplayer)) :- true(control(oplayer)).
 next(cell(M,N,x)) :- does(xplayer, mark(M , N)).
 next(cell(M,N,o)) :- does(oplayer, mark(M , N)).
-next(cell(M,N,C)) :- true(cell(M,N,C)), does(P, mark(X , Y)), X \== M.
-next(cell(M ,N , C)) :- true(cell(M,N,C)), does(P, mark(X, Y)), Y \== N.
+next(cell(M,N,C)) :- true(cell(M,N,C)), does(P, mark(X , Y)), X \= M.
+next(cell(M ,N , C)) :- true(cell(M,N,C)), does(P, mark(X, Y)), Y \= N.
 terminal :- line(x).
 terminal :- line(o).
 terminal :- not(open).
