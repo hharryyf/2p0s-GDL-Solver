@@ -5,14 +5,21 @@ init(cell(1, 1, xplayer)).
 init(cell(2, 1, xplayer)).
 init(cell(3, 1, xplayer)).
 init(cell(4, 1, xplayer)).
-init(cell(5, 1, xplayer)).
 
+init(cell(1, 5, oplayer)).
+init(cell(2, 5, oplayer)).
+init(cell(3, 5, oplayer)).
+init(cell(4, 5, oplayer)).
+
+init(cell(1, 2, xplayer)).
+init(cell(2, 2, xplayer)).
+init(cell(3, 2, xplayer)).
+init(cell(4, 2, xplayer)).
 
 init(cell(1, 4, oplayer)).
 init(cell(2, 4, oplayer)).
 init(cell(3, 4, oplayer)).
 init(cell(4, 4, oplayer)).
-init(cell(5, 4, oplayer)).
 
 
 init(control(xplayer)).
@@ -79,7 +86,7 @@ distinctCell(X1, Y1, X2, Y2) :- cell(X1, Y1), cell(X2, Y2), X1 \= X2.
 
 distinctCell(X1, Y1, X2, Y2) :- cell(X1, Y1), cell(X2, Y2), Y1 \= Y2.
 
-whiteWin :- xindex(X), true(cell(X, 4, xplayer)).
+whiteWin :- xindex(X), true(cell(X, 5, xplayer)).
 
 blackWin :- xindex(X), true(cell(X, 1, oplayer)).
 
@@ -96,15 +103,16 @@ xindex(1).
 xindex(2).
 xindex(3).
 xindex(4).
-xindex(5).
 yindex(1).
 yindex(2).
 yindex(3).
 yindex(4).
+yindex(5).
 xplusplus(1, 2).
 xplusplus(2, 3).
 xplusplus(3, 4).
-xplusplus(4, 5).
 yplusplus(1, 2).
 yplusplus(2, 3).
 yplusplus(3, 4).
+yplusplus(4, 5).
+

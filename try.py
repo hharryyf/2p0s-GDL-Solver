@@ -1,7 +1,7 @@
 from pyswip import Prolog
 
 prolog = Prolog()
-prolog.consult('game/break-through-4x4.pl')
+prolog.consult('game/nim.pl')
     
 for i in range(0, 100000):
     nxt = list(prolog.query('init(X)'))
